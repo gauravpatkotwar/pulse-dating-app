@@ -1,6 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import Wallet from "./components/Wallet";
+import Logo from "./components/Logo";
 import { useAppContext } from "./context/AppContext";
 
 export default function Home() {
@@ -10,7 +11,9 @@ export default function Home() {
     <main className="app-container">
       {/* Top section: Header */}
       <header className={styles.header}>
-        <div className={styles.logo}>Pulse.</div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Logo size={36} />
+        </div>
         <nav className={styles.nav}>
           <a href="#discover">Discover</a>
           <a href="/chat">Chat</a>

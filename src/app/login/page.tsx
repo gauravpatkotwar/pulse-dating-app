@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
+import Logo from "../components/Logo";
 
 export default function LoginPage() {
   const { login, loginAnonymous } = useAppContext();
@@ -26,8 +27,10 @@ export default function LoginPage() {
     }}>
       <div className="bento-card" style={{ width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         
-        <div style={{ textAlign: 'center' }}>
-          <h1 className="h1" style={{ color: 'var(--accent)', marginBottom: '8px' }}>Pulse.</h1>
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <Logo size={42} />
+          </div>
           <p className="text-muted">Sign in to start connecting</p>
         </div>
 
