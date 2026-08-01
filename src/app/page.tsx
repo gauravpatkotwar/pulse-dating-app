@@ -17,6 +17,7 @@ export default function Home() {
         <nav className={styles.nav}>
           <a href="#discover">Discover</a>
           <a href="/chat">Chat</a>
+          <a href="/nsfw-chat" style={{ color: '#FF5C5C', borderBottom: '1px solid #FF5C5C' }}>18+</a>
           <a href="/calls">Calls</a>
         </nav>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
