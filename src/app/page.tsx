@@ -33,7 +33,8 @@ export default function Home() {
         
         <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           <Link href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 500 }}>Discover</Link>
-          <Link href="/marketplace" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>🛍️ Marketplace</Link>
+          <Link href="/clubs" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>🏰 Clubs</Link>
+          <Link href="/marketplace" style={{ color: 'white', textDecoration: 'none', fontWeight: 500 }}>🛍️ Marketplace</Link>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px 12px', borderRadius: '100px', border: '1px solid var(--card-border)' }}>
               <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>🪙 {profile?.tokens || 0}</span>
