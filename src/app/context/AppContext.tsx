@@ -6,15 +6,26 @@ import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { db, auth } from "../../lib/firebase";
 
-export type UserProfile = {
-  displayName?: string;
-  bio?: string;
-  age?: number;
-  gender?: string;
+export interface UserProfile {
   tokens: number;
   isPremium: boolean;
   onboardingComplete?: boolean;
-};
+  displayName?: string;
+  age?: number;
+  gender?: string;
+  bio?: string;
+  
+  // Heavy Profile Data (Creator Platform)
+  isVerified?: boolean;
+  subscriberCount?: number;
+  gallery?: string[]; // Array of image URLs
+  lockedContent?: {
+    id: string;
+    url: string;
+    priceTokens: number;
+  }[];
+  subscriptionPrice?: number;
+}
 
 type AppContextType = {
   user: User | null;
@@ -33,80 +44,37 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<any>({ uid: 'mock-user-id', email: 'test@pulse.app' });
+  const [profile, setProfile] = useState<UserProfile | null>({
+    tokens: 1500,
+    isPremium: true,
+    onboardingComplete: true,
+    displayName: "Jane Doe",
+    age: 24,
+    gender: "Female",
+    bio: "Just here to make some real connections and share exclusive content.",
+    isVerified: true,
+    subscriberCount: 1420,
+    subscriptionPrice: 50,
+    gallery: [],
+    lockedContent: []
+  });
+  const [isLoading, setIsLoading] = useState(false);
   
   const router = useRouter();
   const pathname = usePathname();
 
-  // 1. Listen for Firebase Auth State Changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-      setIsLoading(false);
-      
-      if (!firebaseUser && pathname !== '/login') {
-        router.push('/login');
-      }
-    });
-
-    return () => unsubscribe();
-  }, [pathname, router]);
-
-  // 2. Listen for Firestore Profile Changes
-  useEffect(() => {
-    if (!user) {
-      setProfile(null);
-      return;
-    }
-
-    const userDocRef = doc(db, "users", user.uid);
-    
-    const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data() as UserProfile;
-        setProfile(data);
-        
-        if (!data.onboardingComplete) {
-          // Redirect to onboarding if they haven't completed it
-          if (pathname !== '/onboarding') router.push('/onboarding');
-        } else {
-          // If onboarding is complete and they are on the login page, take them to home
-          if (pathname === '/login') router.push('/');
-        }
-      } else {
-        // Initialize new user cloud profile
-        const newProfile: UserProfile = {
-          tokens: 0,
-          isPremium: false,
-        };
-        setDoc(userDocRef, newProfile, { merge: true });
-        
-        if (pathname !== '/onboarding') {
-          router.push('/onboarding');
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, [user, pathname, router]);
-
-  // Cloud Write wrappers
+  // Cloud Write wrappers (Mocked for now)
   const setTokens: React.Dispatch<React.SetStateAction<number>> = (value) => {
-    if (!user) return;
-    
     if (typeof value === "function") {
-       const newVal = value(profile?.tokens || 0);
-       setDoc(doc(db, "users", user.uid), { tokens: newVal }, { merge: true });
+       setProfile(prev => prev ? { ...prev, tokens: value(prev.tokens) } : prev);
     } else {
-       setDoc(doc(db, "users", user.uid), { tokens: value }, { merge: true });
+       setProfile(prev => prev ? { ...prev, tokens: value } : prev);
     }
   };
 
   const setPremium = (status: boolean) => {
-    if (!user) return;
-    setDoc(doc(db, "users", user.uid), { isPremium: status }, { merge: true });
+    setProfile(prev => prev ? { ...prev, isPremium: status } : prev);
   };
 
   const deductTokens = (amount: number) => {
@@ -118,15 +86,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
   
   const logout = () => {
-    signOut(auth).then(() => {
-      router.push('/login');
-    });
+    // Mock logout just clears the user for testing
+    setUser(null);
+    router.push('/login');
   };
 
   // Fallbacks for UI components that rely on the old flat properties
   const tokens = profile?.tokens || 0;
   const isPremium = profile?.isPremium || false;
-  const username = profile?.displayName || user?.email?.split('@')[0] || "Anonymous";
+  const username = profile?.displayName || "Jane Doe";
   const isAuthenticated = !!user;
 
   return (
@@ -135,8 +103,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       username, isAuthenticated, isPremium, setPremium, 
       logout, isLoading 
     }}>
-      {/* Show nothing while initial auth state loads to prevent flash of login page */}
-      {isLoading ? null : children}
+      {children}
     </AppContext.Provider>
   );
 }

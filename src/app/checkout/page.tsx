@@ -11,15 +11,23 @@ export default function CheckoutPage() {
   const { setTokens, setPremium } = useAppContext();
   const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
   
-  // Sandbox Price IDs for Subscription plans (No Free Trial)
-  const products = [
+  const [region, setRegion] = useState<"GLOBAL" | "INDIA">("INDIA");
+
+  // Global USD Products
+  const globalProducts = [
     { name: "Starter Monthly", price: "$10.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj' },
-    { name: "Starter Yearly", price: "$100.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m8044srg70npddc5ndzyc' },
     { name: "Pro Monthly", price: "$40.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m80p6aw3esp2favvphfnj' },
-    { name: "Pro Yearly", price: "$400.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m80y529j54p5mz503a9tf' },
     { name: "Advanced Monthly", price: "$120.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m81fwtpnjgytmv70ww5ed' },
-    { name: "Advanced Yearly", price: "$1200.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m81r8hkcs0d5bwtas17k3' },
   ];
+
+  // India PPP Special Products (Affordable Local Pricing)
+  const indiaProducts = [
+    { name: "Weekly Pulse Pass", price: "₹59/week", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj', note: "🔥 Most Popular in India! (~$0.70/wk)" },
+    { name: "Monthly Pro Pass", price: "₹199/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m80p6aw3esp2favvphfnj', note: "Save 20% over weekly" },
+    { name: "100 Pulse Coins Pack", price: "₹49", type: "coins" as const, value: 100, priceId: 'pri_01kz0m81fwtpnjgytmv70ww5ed', note: "Instant Coin Top-up" },
+  ];
+
+  const currentProducts = region === "INDIA" ? indiaProducts : globalProducts;
 
   useEffect(() => {
     // NOTE: Replace with your actual Sandbox Client-side Token
@@ -30,7 +38,7 @@ export default function CheckoutPage() {
         if (event.name === 'checkout.completed') {
           // Paddle checkout was successful!
           const purchasedItem = event.data?.items?.[0]?.price?.id;
-          const product = products.find(p => p.priceId === purchasedItem);
+          const product = [...globalProducts, ...indiaProducts].find(p => p.priceId === purchasedItem);
           
           if (product) {
             if (product.type === "coins") {
@@ -53,7 +61,7 @@ export default function CheckoutPage() {
     );
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handlePurchase = (product: typeof products[0]) => {
+  const handlePurchase = (product: typeof globalProducts[0] | typeof indiaProducts[0]) => {
     if (!paddle) {
       alert("Paddle is initializing, please wait a moment.");
       return;
@@ -67,7 +75,6 @@ export default function CheckoutPage() {
           quantity: 1
         }
       ],
-      // Optional settings you can configure
       settings: {
         theme: 'dark',
       }
@@ -79,29 +86,50 @@ export default function CheckoutPage() {
       
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="h2" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button onClick={() => router.back()} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', fontSize: '24px', cursor: 'pointer' }}>←</button> 
+          <button onClick={() => router.back()} style={{ background: 'transparent', border: 'none', color: 'var(--accent-primary)', fontSize: '24px', cursor: 'pointer' }}>←</button> 
           <Logo size={28} /> <span style={{ marginLeft: '8px' }}>Store</span>
         </h1>
       </header>
 
       <div style={{ marginTop: '40px', maxWidth: '800px', margin: '40px auto 0' }}>
-        <h2 className="h1" style={{ textAlign: 'center', marginBottom: '16px' }}>Choose your plan</h2>
-        <p className="text-muted" style={{ textAlign: 'center', marginBottom: '40px' }}>
-          Top up your Pulse Coins or unlock exclusive features with Premium. Secured by Paddle.
+        <h2 className="h1" style={{ textAlign: 'center', marginBottom: '8px' }}>Choose Your Plan</h2>
+        <p className="text-muted" style={{ textAlign: 'center', marginBottom: '24px' }}>
+          Affordable localized pricing secured via Paddle.
         </p>
 
+        {/* Currency / Region Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '32px' }}>
+          <button 
+            onClick={() => setRegion("INDIA")}
+            className={region === "INDIA" ? "btn-primary" : "btn-outline"}
+            style={{ padding: '8px 20px', fontSize: '14px' }}
+          >
+            🇮🇳 India Pricing (₹ INR)
+          </button>
+          <button 
+            onClick={() => setRegion("GLOBAL")}
+            className={region === "GLOBAL" ? "btn-primary" : "btn-outline"}
+            style={{ padding: '8px 20px', fontSize: '14px' }}
+          >
+            🌐 International ($ USD)
+          </button>
+        </div>
+
         {!paddle && (
-          <div style={{ textAlign: 'center', marginBottom: '24px', color: 'var(--accent)' }}>
-            Loading Paddle Checkout...
+          <div style={{ textAlign: 'center', marginBottom: '24px', color: 'var(--accent-primary)' }}>
+            Loading Checkout...
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-          {products.map(product => (
-            <div key={product.name} className="bento-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px', justifyContent: 'space-between' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+          {currentProducts.map(product => (
+            <div key={product.name} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '24px', justifyContent: 'space-between' }}>
               <div>
                 <h3 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>{product.name}</h3>
-                <div style={{ fontSize: '32px', fontWeight: 700, color: 'var(--accent)' }}>{product.price}</div>
+                <div style={{ fontSize: '32px', fontWeight: 700, color: 'var(--accent-primary)' }}>{product.price}</div>
+                {'note' in product && (
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px', marginBottom: 0 }}>{product.note}</p>
+                )}
               </div>
               <button 
                 className="btn-primary" 
@@ -109,7 +137,7 @@ export default function CheckoutPage() {
                 style={{ width: '100%', opacity: paddle ? 1 : 0.5, cursor: paddle ? 'pointer' : 'not-allowed' }}
                 disabled={!paddle}
               >
-                Buy Now
+                Subscribe Now
               </button>
             </div>
           ))}

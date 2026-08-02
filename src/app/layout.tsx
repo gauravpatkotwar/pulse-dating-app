@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "./context/AppContext";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
 export const metadata: Metadata = {
-  title: "Pulse | Anonymous Dating & Video Calls",
-  description: "Connect instantly with secure, anonymous profiles, and real-time VoIP and video calling.",
+  title: "Pulse - Premium Anonymous Dating",
+  description: "Connect safely and anonymously on Pulse.",
 };
 
 export default function RootLayout({
@@ -14,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.variable}>
         <AppProvider>
           {children}
         </AppProvider>

@@ -1,211 +1,165 @@
-"use client";
-import styles from "./page.module.css";
-import Wallet from "./components/Wallet";
-import Logo from "./components/Logo";
 import { useAppContext } from "./context/AppContext";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { isAuthenticated, username, logout, isPremium, setPremium, profile } = useAppContext();
+  const { isAuthenticated, user, profile, logout, isPremium } = useAppContext();
+  const [roomId, setRoomId] = useState("");
+  const router = useRouter();
+
+  const handleJoinCall = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (roomId.trim()) {
+      router.push(`/call/${roomId.trim()}`);
+    }
+  };
+
+  const handleStartRandomCall = () => {
+    const newRoomId = Math.random().toString(36).substring(2, 10);
+    router.push(`/call/${newRoomId}`);
+  };
 
   return (
     <main className="app-container">
-      {/* Top section: Header */}
-      <header className={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Logo size={36} />
+      {/* Top Header */}
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '40px', height: '40px', background: 'var(--accent-primary)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000', fontWeight: 'bold', fontSize: '20px' }}>
+            P
+          </div>
+          <span style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.03em' }}>Pulse</span>
         </div>
-        <nav className={styles.nav}>
-          <a href="#discover">Discover</a>
-        </nav>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <Wallet />
+        
+        <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span style={{ fontWeight: 600 }}>{username}</span>
-              <button className="btn-primary" onClick={logout} style={{ background: '#333', color: '#fff' }}>Logout</button>
-            </div>
+            <>
+              <Link href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 500 }}>Discover</Link>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '6px 12px', borderRadius: '100px', border: '1px solid var(--card-border)' }}>
+                <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>🪙 {profile?.tokens || 0}</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Tokens</span>
+              </div>
+            </>
           ) : (
-            <a href="/login" className="btn-primary">Sign In</a>
+            <Link href="/login" className="btn-primary">Sign In</Link>
           )}
-        </div>
+        </nav>
       </header>
 
-
-      {/* Secondary Grid */}
-      <div className="bento-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', marginTop: '16px' }}>
-        
-        {/* WebRTC Calling Card */}
-        <div className="bento-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <h3 className="h3" style={{ margin: '0 0 8px 0' }}>Video & Voice Calling</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>Start a secure peer-to-peer WebRTC call.</p>
-          </div>
+      {isAuthenticated ? (
+        <div className="home-layout">
           
-          <button 
-            onClick={() => {
-              const newRoomId = Math.random().toString(36).substring(2, 10);
-              window.location.href = `/call/${newRoomId}`;
-            }}
-            className="btn-primary"
-            style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
-          >
-            📹 Start New Call
-          </button>
-          
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input 
-              type="text" 
-              placeholder="Enter Room ID" 
-              id="joinRoomInput"
-              style={{
-                flex: 1,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                padding: '0 12px',
-                color: 'white'
-              }}
-            />
-            <button 
-              onClick={() => {
-                const input = document.getElementById('joinRoomInput') as HTMLInputElement;
-                if (input.value) {
-                  window.location.href = `/call/${input.value}`;
-                }
-              }}
-              style={{
-                padding: '12px 20px',
-                background: 'rgba(255,255,255,0.1)',
-                border: 'none',
-                borderRadius: '8px',
-                color: 'white',
-                cursor: 'pointer',
-                fontWeight: 500
-              }}
-            >
-              Join
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Bento Grid */}
-      <div className="bento-grid">
-        {/* Main Profile / 3D Avatar Area */}
-        <div className={`bento-card ${styles.cardHero}`} style={{ position: 'relative' }}>
-          <div className={styles.heroContent} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {/* Left Sidebar (User ID Badge) */}
+          <aside className="glass-panel animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            {/* Avatar Section */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+              <div style={{ 
+                width: '100px', 
+                height: '100px', 
+                borderRadius: '50%', 
+                background: 'rgba(0,0,0,0.5)', 
+                border: '2px solid var(--card-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '48px',
+                marginBottom: '16px'
+              }}>
+                {profile?.gender === 'Male' ? '👦' : profile?.gender === 'Female' ? '👩' : '👽'}
+              </div>
+              
+              <h2 style={{ margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+                {profile?.displayName || "Anonymous"} 
+                {profile?.isVerified && <span style={{ color: '#1D9BF0', fontSize: '16px' }}>✓</span>}
+              </h2>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '14px' }}>
+                {profile?.age ? `${profile.age} years old` : 'Age not set'}
+              </p>
+              
+              {/* Premium Badge */}
+              <div style={{ marginTop: '12px', padding: '4px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 600, background: isPremium ? 'var(--accent-primary)' : 'rgba(255,255,255,0.1)', color: isPremium ? '#000' : 'white' }}>
+                {isPremium ? 'PRO MEMBER' : 'STANDARD'}
+              </div>
+            </div>
+
+            {/* Stats Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', padding: '16px 0', borderTop: '1px solid var(--card-border)', borderBottom: '1px solid var(--card-border)' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '20px', fontWeight: 700 }}>{profile?.subscriberCount || 0}</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Subscribers</div>
+              </div>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid var(--card-border)' }}>
+                <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--accent-primary)' }}>{profile?.tokens || 0}</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Pulse Coins</div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Link href="/profile" className="btn-outline" style={{ textAlign: 'center', textDecoration: 'none' }}>Edit Profile</Link>
+              <button onClick={logout} className="btn-outline" style={{ borderColor: 'transparent', color: 'var(--accent-danger)' }}>Sign Out</button>
+            </div>
+          </aside>
+
+
+          {/* Main Content Feed */}
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            
+            {/* Quick Actions Hero */}
+            <div className="glass-panel animate-fade-in" style={{ animationDelay: '0.1s', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(145deg, rgba(25,25,25,0.8) 0%, rgba(10,10,10,0.9) 100%)' }}>
               <div>
-                <h1 className="h1" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {profile?.displayName || "Anonymous"} 
-                  {profile?.age && <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{profile.age}</span>}
-                </h1>
-                {profile?.gender && (
-                  <span style={{ 
-                    display: 'inline-block', marginTop: '8px', padding: '4px 12px', 
-                    background: 'rgba(255,255,255,0.1)', borderRadius: '100px', fontSize: '14px' 
-                  }}>
-                    {profile.gender}
-                  </span>
-                )}
+                <h2 style={{ marginTop: 0, marginBottom: '8px' }}>Start Connecting</h2>
+                <p style={{ color: 'var(--text-secondary)', margin: 0, maxWidth: '400px', lineHeight: 1.5 }}>
+                  Launch a secure, peer-to-peer video call instantly. No downloads required.
+                </p>
               </div>
-              <div className={styles.colorDots}>
-                <span className={styles.dot} style={{ backgroundColor: '#FF5C5C' }}></span>
-                <span className={styles.dot} style={{ backgroundColor: '#5CFF7A' }}></span>
-                <span className={styles.dot} style={{ backgroundColor: '#5CC9FF' }}></span>
-              </div>
+              <button onClick={handleStartRandomCall} className="btn-primary" style={{ padding: '16px 32px' }}>
+                📸 New Video Call
+              </button>
             </div>
 
-            <div className={styles.avatarContainer} style={{ marginTop: 'auto', marginBottom: 'auto' }}>
-               <div className={styles.avatarPlaceholder} style={{ background: 'transparent' }}>
-                 <span className={styles.avatarEmoji} style={{ fontSize: '100px' }}>
-                   {profile?.gender === 'Female' ? '👩' : (profile?.gender === 'Male' ? '👦' : '🧑')}
-                 </span>
-               </div>
+            {/* Join Call Input */}
+            <div className="glass-panel animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <h3 style={{ marginTop: 0 }}>Join an existing room</h3>
+              <form onSubmit={handleJoinCall} style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
+                <input 
+                  type="text" 
+                  value={roomId}
+                  onChange={(e) => setRoomId(e.target.value)}
+                  placeholder="Enter Room ID (e.g. knd1mcuk)"
+                  style={{ flex: 1 }}
+                />
+                <button type="submit" className="btn-outline" disabled={!roomId.trim()}>
+                  Join Room
+                </button>
+              </form>
             </div>
 
-            <div style={{ marginTop: 'auto' }}>
-               <p style={{ fontSize: '18px', lineHeight: 1.5, color: '#e0e0e0', fontStyle: 'italic', textAlign: 'center' }}>
-                 "{profile?.bio || "Set up your bio in settings to get more matches!"}"
-               </p>
+            {/* Placeholder for Creator Feed / Matches */}
+            <div className="glass-panel animate-fade-in" style={{ animationDelay: '0.3s', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>✨</div>
+              <h3>Creator Feed coming soon</h3>
+              <p>This space will feature premium locked content and galleries.</p>
             </div>
-            
-          </div>
+
+          </section>
+
         </div>
-
-        {/* Discovery Settings */}
-        <div className={`bento-card ${styles.cardSettings}`}>
-          <div className={styles.settingsHeader}>
-            <h1 className="h2">Discover Pulse's Full Potential</h1>
-            <p className="text-muted">Set up your anonymous profile to start connecting</p>
-          </div>
-
-          <div className={styles.settingsPanel}>
-            <h3 className={styles.panelTitle}>Settings</h3>
-            <div className={styles.settingsGrid}>
-              <label className={styles.settingToggle}>
-                <input type="checkbox" defaultChecked />
-                <span className={styles.toggleText}>Voice filters</span>
-              </label>
-              <label className={styles.settingToggle}>
-                <input type="checkbox" defaultChecked />
-                <span className={styles.toggleText}>Blur video initially</span>
-              </label>
-              <label className={styles.settingToggle}>
-                <input type="checkbox" defaultChecked />
-                <span className={styles.toggleText}>Incognito matching</span>
-              </label>
-              <label className={styles.settingToggle}>
-                <input type="checkbox" />
-                <span className={styles.toggleText}>Share exact location</span>
-              </label>
-            </div>
-          </div>
+      ) : (
+        /* Logged Out Hero */
+        <div style={{ textAlign: 'center', marginTop: '120px', maxWidth: '800px', margin: '120px auto 0' }} className="animate-fade-in">
+          <h1 style={{ fontSize: '64px', lineHeight: 1.1, marginBottom: '24px' }}>
+            The premium platform for <span style={{ color: 'var(--accent-primary)' }}>real connections.</span>
+          </h1>
+          <p style={{ fontSize: '20px', color: 'var(--text-secondary)', marginBottom: '40px', lineHeight: 1.6 }}>
+            Secure video calling, premium creator subscriptions, and real-time interactions, all built on a state-of-the-art encrypted network.
+          </p>
+          <Link href="/login" className="btn-primary" style={{ padding: '18px 40px', fontSize: '18px', textDecoration: 'none' }}>
+            Get Started Now
+          </Link>
         </div>
-
-        {/* Subscription / Premium Plans */}
-        <div className={`bento-card ${styles.cardPlans}`}>
-          <div className={styles.plansContainer}>
-            <div className={styles.planCard}>
-              <div className={styles.planTitle}>Monthly</div>
-              <div className={styles.planPrice}>$6.99</div>
-              <p className={styles.planDesc}>Month-to-month subscription. Cancel anytime!</p>
-            </div>
-            <div className={`${styles.planCard} ${styles.planActive}`}>
-              <div className={styles.planTitle}>
-                Yearly <span className={styles.discountBadge}>-40%</span>
-              </div>
-              <div className={styles.planPrice}>$49.99</div>
-              <p className={styles.planDesc}>Save more with an annual subscription.</p>
-            </div>
-            <div className={styles.planCard}>
-              <div className={styles.planTitle}>Lifetime</div>
-              <div className={styles.planPrice}>$119.99</div>
-              <p className={styles.planDesc}>One-time payment. Premium forever.</p>
-            </div>
-          </div>
-
-          <div className={styles.planFooter}>
-             <p className="text-muted">With our monthly and yearly plans, you have the freedom to cancel anytime.</p>
-             <button 
-                className="btn-primary" 
-                onClick={() => {
-                  if (isPremium) {
-                    alert("You already have an active premium subscription.");
-                  } else {
-                    window.location.href = '/checkout';
-                  }
-                }}
-                style={{ width: '100%', marginTop: '16px', background: isPremium ? '#C4F042' : undefined, color: isPremium ? '#000' : undefined }}
-             >
-                {isPremium ? '✅ Premium Active' : '✨ Subscribe via Paddle'}
-             </button>
-          </div>
-        </div>
-
-
-      </div>
+      )}
     </main>
   );
 }
