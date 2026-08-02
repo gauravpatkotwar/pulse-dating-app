@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation";
 import LiveTicker from "./components/LiveTicker";
 import OrbitalRadar from "./components/OrbitalRadar";
 import DiscoverDeck from "./components/DiscoverDeck";
-import { CurrencyCoinIcon, AvatarMale, AvatarFemale, AvatarOther, VerifiedBadgeIcon, InstagramIcon, FacebookIcon, TikTokIcon, YouTubeIcon, WebsiteIcon } from "./components/Icons";
+import Globe3D from "./components/Globe3D";
+import { CurrencyCoinIcon, AvatarMale, AvatarFemale, AvatarOther, VerifiedBadgeIcon, InstagramIcon, FacebookIcon, TikTokIcon, YouTubeIcon, WebsiteIcon, WebsiteIcon as GlobeIcon } from "./components/Icons";
 import Logo from "./components/Logo";
 
 export default function Home() {
   const { isAuthenticated, user, profile, logout, isPremium } = useAppContext();
   const [roomId, setRoomId] = useState("");
+  const [viewMode, setViewMode] = useState<"radar" | "globe">("globe");
   const router = useRouter();
 
   const handleJoinCall = (e: React.FormEvent) => {
@@ -148,14 +150,53 @@ export default function Home() {
           {/* Main Asymmetric Centerpiece Grid */}
           <section style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             
-            {/* Interactive Radar Hub */}
+            {/* View Mode Mode Switcher Header & Interactive Centerpiece */}
             <div className="glass-panel animate-fade-in" style={{ padding: '32px', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', fontWeight: 800, color: '#888888', letterSpacing: '0.12em', marginBottom: '8px' }}>
-                INTERACTIVE ORBITAL RADAR
-              </div>
-              <h2 style={{ margin: 0, fontSize: '28px' }}>P2P Active Stream Orbit</h2>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginBottom: '20px' }}>
+                <button
+                  onClick={() => setViewMode("globe")}
+                  className="btn-outline"
+                  style={{
+                    borderRadius: '100px',
+                    padding: '8px 20px',
+                    fontSize: '13px',
+                    background: viewMode === "globe" ? "#FFFFFF" : "rgba(255,255,255,0.03)",
+                    color: viewMode === "globe" ? "#000000" : "#FFFFFF",
+                    borderColor: viewMode === "globe" ? "#FFFFFF" : "var(--card-border)",
+                    fontWeight: viewMode === "globe" ? 800 : 500
+                  }}
+                >
+                  🌍 3D Global Earth Radar
+                </button>
 
-              <OrbitalRadar />
+                <button
+                  onClick={() => setViewMode("radar")}
+                  className="btn-outline"
+                  style={{
+                    borderRadius: '100px',
+                    padding: '8px 20px',
+                    fontSize: '13px',
+                    background: viewMode === "radar" ? "#FFFFFF" : "rgba(255,255,255,0.03)",
+                    color: viewMode === "radar" ? "#000000" : "#FFFFFF",
+                    borderColor: viewMode === "radar" ? "#FFFFFF" : "var(--card-border)",
+                    fontWeight: viewMode === "radar" ? 800 : 500
+                  }}
+                >
+                  📡 Orbital Pulse Radar
+                </button>
+              </div>
+
+              {viewMode === "globe" ? (
+                <Globe3D />
+              ) : (
+                <>
+                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#888888', letterSpacing: '0.12em', marginBottom: '8px' }}>
+                    INTERACTIVE ORBITAL RADAR
+                  </div>
+                  <h2 style={{ margin: 0, fontSize: '28px' }}>P2P Active Stream Orbit</h2>
+                  <OrbitalRadar />
+                </>
+              )}
             </div>
 
             {/* 3D Perspective Card Deck & Direct Join Layout */}
