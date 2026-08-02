@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AvatarFemale, AvatarMale, VerifiedBadgeIcon, VideoIcon } from "./Icons";
+import { AvatarFemale, AvatarMale, VerifiedBadgeIcon, VideoIcon, RomanticHeartIcon } from "./Icons";
 
 interface DeckCard {
   id: string;
