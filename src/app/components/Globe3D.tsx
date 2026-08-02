@@ -34,6 +34,7 @@ export default function Globe3D() {
   // Rotation angles in radians
   const rotXRef = useRef(0.2);
   const rotYRef = useRef(0);
+  const scanAngleRef = useRef(0);
   const isDraggingRef = useRef(false);
   const lastMouseXRef = useRef(0);
   const lastMouseYRef = useRef(0);
@@ -51,25 +52,65 @@ export default function Globe3D() {
       if (!isDraggingRef.current) {
         rotYRef.current += 0.005;
       }
+      scanAngleRef.current += 0.015;
 
       const width = canvas.width;
       const height = canvas.height;
-      const radius = Math.min(width, height) * 0.38;
+      const radius = Math.min(width, height) * 0.35;
       const centerX = width / 2;
       const centerY = height / 2;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Draw Globe Outer Stealth Atmosphere Aura
+      // 1. Draw Background Starfield Dust behind Globe
+      ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+      for (let i = 0; i < 40; i++) {
+        const starX = (Math.sin(i * 99 + rotYRef.current * 0.2) * 0.5 + 0.5) * width;
+        const starY = (Math.cos(i * 33 + rotYRef.current * 0.1) * 0.5 + 0.5) * height;
+        const size = (i % 3 === 0) ? 1.5 : 0.8;
+        ctx.beginPath();
+        ctx.arc(starX, starY, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 2. Draw Outer Cyber Radar Ring 1
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 1.35, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset dash
+
+      // 3. Draw Outer Cyber Radar Ring 2
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 1.55, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 4. Draw Radar Sweeping Beam Line
+      const scanX = centerX + Math.cos(scanAngleRef.current) * (radius * 1.35);
+      const scanY = centerY + Math.sin(scanAngleRef.current) * (radius * 1.35);
+      const scanGrad = ctx.createLinearGradient(centerX, centerY, scanX, scanY);
+      scanGrad.addColorStop(0, "rgba(255, 255, 255, 0.3)");
+      scanGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.strokeStyle = scanGrad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(scanX, scanY);
+      ctx.stroke();
+
+      // 5. Draw Globe Outer Stealth Atmosphere Aura
       const auraGradient = ctx.createRadialGradient(centerX, centerY, radius * 0.8, centerX, centerY, radius * 1.2);
-      auraGradient.addColorStop(0, "rgba(255, 255, 255, 0.04)");
+      auraGradient.addColorStop(0, "rgba(255, 255, 255, 0.05)");
       auraGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = auraGradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius * 1.25, 0, Math.PI * 2);
       ctx.fill();
 
-      // Draw Globe Sphere Base Circle
+      // 6. Draw Globe Sphere Base Circle
       ctx.fillStyle = "rgba(14, 14, 14, 0.95)";
       ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
       ctx.lineWidth = 1.5;
@@ -83,12 +124,10 @@ export default function Globe3D() {
         const latRad = (latDeg * Math.PI) / 180;
         const lonRad = (lonDeg * Math.PI) / 180 + rotYRef.current;
 
-        // 3D coordinates on sphere
         const x3d = radius * Math.cos(latRad) * Math.sin(lonRad);
         const y3d = -radius * Math.sin(latRad);
         const z3d = radius * Math.cos(latRad) * Math.cos(lonRad);
 
-        // Apply pitch (rotX)
         const rx = rotXRef.current;
         const yRot = y3d * Math.cos(rx) - z3d * Math.sin(rx);
         const zRot = y3d * Math.sin(rx) + z3d * Math.cos(rx);
@@ -97,11 +136,11 @@ export default function Globe3D() {
           screenX: centerX + x3d,
           screenY: centerY + yRot,
           z: zRot,
-          isVisible: zRot > 0 // Front-facing hemisphere
+          isVisible: zRot > 0
         };
       };
 
-      // Draw Latitude & Longitude Grid Lines
+      // 7. Draw Latitude & Longitude Grid Lines
       ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
       ctx.lineWidth = 1;
 
@@ -137,15 +176,14 @@ export default function Globe3D() {
         ctx.stroke();
       }
 
-      // Render User Pins on the 3D Globe
+      // 8. Render User Pins on the 3D Globe
       globalUsers.forEach((u) => {
         const pt = project(u.lat, u.lon);
         if (pt.isVisible) {
-          // Draw Glowing Target Pulse Pin
           const isSelected = selectedUser?.id === u.id;
 
           // Outer Pulse Ring
-          ctx.strokeStyle = isSelected ? "#FFFFFF" : "rgba(255, 255, 255, 0.6)";
+          ctx.strokeStyle = isSelected ? "#FFFFFF" : "rgba(255, 255, 255, 0.7)";
           ctx.lineWidth = isSelected ? 2 : 1;
           ctx.beginPath();
           ctx.arc(pt.screenX, pt.screenY, isSelected ? 12 : 8, 0, Math.PI * 2);
@@ -158,8 +196,8 @@ export default function Globe3D() {
           ctx.fill();
 
           // Label Flag
-          ctx.fillStyle = "rgba(10, 10, 10, 0.9)";
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+          ctx.fillStyle = "rgba(10, 10, 10, 0.95)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
           ctx.lineWidth = 1;
           const text = `${u.name} (${u.city.split(',')[0]})`;
           ctx.font = "11px sans-serif";
@@ -218,7 +256,7 @@ export default function Globe3D() {
 
     const width = canvas.width;
     const height = canvas.height;
-    const radius = Math.min(width, height) * 0.38;
+    const radius = Math.min(width, height) * 0.35;
     const centerX = width / 2;
     const centerY = height / 2;
 
@@ -259,15 +297,17 @@ export default function Globe3D() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-      <div style={{ fontSize: "11px", fontWeight: 800, color: "#888888", letterSpacing: "0.12em", marginBottom: "8px", textAlign: "center" }}>
-        🌍 INTERACTIVE 3D GLOBAL DISCOVERY RADAR (DRAG TO ROTATE 360°)
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", maxWidth: "560px", marginBottom: "8px", fontSize: "11px", fontWeight: 800, color: "#888888", letterSpacing: "0.1em" }}>
+        <span>📡 RADAR MATRIX: ACTIVE</span>
+        <span>🌍 DRAG TO ROTATE 360°</span>
+        <span>🌐 1,420 ONLINE</span>
       </div>
 
-      <div style={{ position: "relative", width: "100%", maxWidth: "560px", height: "460px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "relative", width: "100%", maxWidth: "560px", height: "480px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <canvas
           ref={canvasRef}
           width={560}
-          height={460}
+          height={480}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
