@@ -68,9 +68,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const data = docSnap.data() as UserProfile;
         setProfile(data);
         
-        // Redirect to onboarding if not complete and not already there
-        if (!data.onboardingComplete && pathname !== '/onboarding' && pathname !== '/login') {
-          router.push('/onboarding');
+        if (!data.onboardingComplete) {
+          // Redirect to onboarding if they haven't completed it
+          if (pathname !== '/onboarding') router.push('/onboarding');
+        } else {
+          // If onboarding is complete and they are on the login page, take them to home
+          if (pathname === '/login') router.push('/');
         }
       } else {
         // Initialize new user cloud profile
@@ -80,7 +83,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         };
         setDoc(userDocRef, newProfile, { merge: true });
         
-        if (pathname !== '/onboarding' && pathname !== '/login') {
+        if (pathname !== '/onboarding') {
           router.push('/onboarding');
         }
       }
