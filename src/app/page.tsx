@@ -45,6 +45,7 @@ export default function Home() {
         
         <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           <Link href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>Discover</Link>
+          <Link href="/live" style={{ color: '#FF5C5C', textDecoration: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}><span className="live-dot" style={{ background: '#FF5C5C' }} /> Live</Link>
           <Link href="/clubs" style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontWeight: 600 }}>🏰 Clubs</Link>
           <Link href="/marketplace" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>🛍️ Marketplace</Link>
           {isAuthenticated ? (
