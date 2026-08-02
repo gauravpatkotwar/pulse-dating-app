@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import LiveTicker from "./components/LiveTicker";
 import OrbitalRadar from "./components/OrbitalRadar";
 import DiscoverDeck from "./components/DiscoverDeck";
+import Logo from "./components/Logo";
 
 export default function Home() {
   const { isAuthenticated, user, profile, logout, isPremium } = useAppContext();
@@ -28,23 +29,7 @@ export default function Home() {
       {/* Stealth Brand Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ 
-            width: '46px', height: '46px', background: '#FFFFFF', 
-            borderRadius: '16px 6px 16px 6px', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-            color: '#000000', fontWeight: '900', fontSize: '24px', boxShadow: '0 10px 30px rgba(255, 255, 255, 0.2)'
-          }}>
-            P
-          </div>
-          <div>
-            <span style={{ 
-              fontSize: '28px', fontWeight: 900, letterSpacing: '-0.04em', color: '#FFFFFF'
-            }}>
-              PULSE
-            </span>
-            <div style={{ fontSize: '10px', color: '#888888', fontWeight: 800, letterSpacing: '0.12em', marginTop: '2px' }}>
-              STEALTH ARCHITECTURAL NETWORK
-            </div>
-          </div>
+          <Logo size={36} />
         </div>
         
         {/* User Sparks Balance Pill */}
