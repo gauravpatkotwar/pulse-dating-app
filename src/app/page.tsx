@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import LiveTicker from "./components/LiveTicker";
 import OrbitalRadar from "./components/OrbitalRadar";
 import DiscoverDeck from "./components/DiscoverDeck";
-import { CurrencyCoinIcon } from "./components/Icons";
+import { CurrencyCoinIcon, AvatarMale, AvatarFemale, AvatarOther, VerifiedBadgeIcon } from "./components/Icons";
 import Logo from "./components/Logo";
 
 export default function Home() {
@@ -69,15 +69,14 @@ export default function Home() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '48px',
                 marginBottom: '16px'
               }}>
-                {profile?.gender === 'Male' ? '👦' : profile?.gender === 'Female' ? '👩' : '👽'}
+                {profile?.gender === 'Male' ? <AvatarMale size={54} /> : profile?.gender === 'Female' ? <AvatarFemale size={54} /> : <AvatarOther size={54} />}
               </div>
               
               <h2 style={{ margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', fontSize: '22px' }}>
                 {profile?.displayName || "Anonymous"} 
-                {profile?.isVerified && <span style={{ color: '#FFFFFF', fontSize: '16px' }}>✓</span>}
+                {profile?.isVerified && <VerifiedBadgeIcon size={18} />}
               </h2>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '14px' }}>
                 {profile?.age ? `${profile.age} years old` : 'Age not set'}

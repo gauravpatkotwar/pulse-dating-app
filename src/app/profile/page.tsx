@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAppContext } from "../context/AppContext";
+import { AvatarFemale, AvatarMale, AvatarOther } from "../components/Icons";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -71,11 +72,21 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <span style={{ fontSize: '80px' }}>
-            {gender === 'Female' ? '👩' : (gender === 'Male' ? '👦' : '🧑')}
-          </span>
-          <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0 0' }}>Your Avatar</p>
+        <div style={{ textAlign: 'center', marginBottom: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'rgba(0,0,0,0.8)',
+            border: '2px solid rgba(255,255,255,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '8px'
+          }}>
+            {gender === 'Female' ? <AvatarFemale size={48} /> : (gender === 'Male' ? <AvatarMale size={48} /> : <AvatarOther size={48} />)}
+          </div>
+          <p style={{ color: 'var(--text-secondary)', margin: '4px 0 0 0', fontSize: '13px' }}>Your Stealth Avatar</p>
         </div>
 
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

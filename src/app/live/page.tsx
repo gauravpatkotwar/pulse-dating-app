@@ -4,99 +4,77 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../context/AppContext";
+import { AvatarFemale, AvatarMale, VerifiedBadgeIcon, LiveIcon, SparksIcon } from "../components/Icons";
 
 export interface LiveStream {
   id: string;
   hostName: string;
-  hostAvatar: string;
+  gender: "Female" | "Male";
   isVerified: boolean;
   title: string;
   category: "Chat & Chill" | "Music & DJ" | "Gaming" | "Q&A Session";
   viewerCount: number;
   tokensEarned: number;
-  thumbnailEmoji: string;
 }
 
 const initialStreams: LiveStream[] = [
   {
     id: "stream-1",
     hostName: "Sophia R.",
-    hostAvatar: "👩",
+    gender: "Female",
     isVerified: true,
-    title: "Late Night Q&A + Music Chill Lounge 🎶",
+    title: "Late Night Q&A + Music Chill Lounge",
     category: "Music & DJ",
     viewerCount: 1420,
-    tokensEarned: 8400,
-    thumbnailEmoji: "🎸"
+    tokensEarned: 8400
   },
   {
     id: "stream-2",
     hostName: "Alex M.",
-    hostAvatar: "👦",
+    gender: "Male",
     isVerified: true,
-    title: "Crypto, Tech & Startup Founders AMA 🚀",
+    title: "Crypto, Tech & Startup Founders AMA",
     category: "Chat & Chill",
     viewerCount: 890,
-    tokensEarned: 12500,
-    thumbnailEmoji: "💻"
+    tokensEarned: 12500
   },
   {
     id: "stream-3",
     hostName: "Elena V.",
-    hostAvatar: "👩",
+    gender: "Female",
     isVerified: true,
-    title: "Fitness & Wellness Q&A + Live Workout 🏋️‍♀️",
+    title: "Fitness & Wellness Q&A + Live Workout",
     category: "Q&A Session",
     viewerCount: 610,
-    tokensEarned: 4300,
-    thumbnailEmoji: "🔥"
+    tokensEarned: 4300
   }
 ];
 
 export default function LiveDirectoryPage() {
   const router = useRouter();
-  const { tokens } = useAppContext();
+  const { profile } = useAppContext();
   const [streams] = useState<LiveStream[]>(initialStreams);
 
-  const handleGoLive = () => {
-    const streamId = `live-${Math.random().toString(36).substring(2, 8)}`;
-    router.push(`/live/${streamId}?host=true`);
-  };
-
   return (
-    <main className="app-container">
+    <main className="app-container" style={{ paddingTop: '20px' }}>
+      
       {/* Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button 
-            onClick={() => router.push('/')} 
-            style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '24px', cursor: 'pointer' }}
-          >
-            ←
-          </button>
-          <div>
-            <h1 className="h2" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="live-dot" /> Pulse Live Streams
-            </h1>
-            <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '14px' }}>Watch creators, send virtual gifts & interact in real time</p>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#888888', fontSize: '11px', fontWeight: 800, letterSpacing: '0.12em', marginBottom: '4px' }}>
+            <LiveIcon size={16} /> LIVE BROADCAST NETWORK
           </div>
+          <h1 style={{ margin: 0, fontSize: '32px' }}>Interactive Live Streams</h1>
         </div>
 
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: '100px', border: '1px solid var(--card-border)' }}>
-            <span style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>🪙 {tokens}</span>
-            <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Coins</span>
-          </div>
-
-          <button onClick={handleGoLive} className="btn-primary">
-            🎥 Go Live Now
-          </button>
-        </div>
+        <Link href="/live/stream-1" className="btn-primary" style={{ textDecoration: 'none' }}>
+          <LiveIcon size={16} color="#000" /> Go Live Now
+        </Link>
       </header>
 
       {/* Streams Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' }}>
-        {streams.map(stream => (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+        {streams.map((stream) => (
           <div 
             key={stream.id}
             className="glass-panel glass-panel-vip"
@@ -106,21 +84,22 @@ export default function LiveDirectoryPage() {
             <div>
               {/* Thumbnail Header */}
               <div style={{ 
-                height: '160px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(25,25,35,0.9) 0%, rgba(10,10,15,0.95) 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px', position: 'relative', overflow: 'hidden'
+                height: '160px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(28,28,28,0.9) 0%, rgba(12,12,12,0.95) 100%)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
               }}>
-                {stream.thumbnailEmoji}
+                <LiveIcon size={48} color="rgba(255,255,255,0.4)" />
 
                 <div style={{ 
-                  position: 'absolute', top: '12px', left: '12px', background: '#FF5C5C', color: 'white',
-                  fontSize: '12px', fontWeight: 700, padding: '4px 10px', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '6px' 
+                  position: 'absolute', top: '12px', left: '12px', background: '#FFFFFF', color: '#000000',
+                  fontSize: '11px', fontWeight: 800, padding: '4px 10px', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '6px' 
                 }}>
-                  <span className="live-dot" style={{ background: '#FFF', boxShadow: 'none' }} /> LIVE
+                  <span className="live-dot" style={{ background: '#000', boxShadow: 'none' }} /> LIVE
                 </div>
 
                 <div style={{ 
-                  position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.6)', color: 'white',
-                  fontSize: '12px', padding: '4px 10px', borderRadius: '100px', backdropFilter: 'blur(10px)'
+                  position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.8)', color: 'white',
+                  fontSize: '12px', padding: '4px 10px', borderRadius: '100px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.15)'
                 }}>
                   👁️ {stream.viewerCount.toLocaleString()}
                 </div>
@@ -132,22 +111,24 @@ export default function LiveDirectoryPage() {
                   {stream.title}
                 </h3>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '20px' }}>{stream.hostAvatar}</span>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#000", border: "1px solid rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {stream.gender === "Female" ? <AvatarFemale size={18} /> : <AvatarMale size={18} />}
+                    </div>
                     <span style={{ fontSize: '14px', fontWeight: 600 }}>{stream.hostName}</span>
-                    {stream.isVerified && <span style={{ color: '#1D9BF0', fontSize: '14px' }}>✓</span>}
+                    {stream.isVerified && <VerifiedBadgeIcon size={14} />}
                   </div>
 
-                  <span style={{ fontSize: '13px', color: 'var(--accent-primary)', fontWeight: 600 }}>
-                    🪙 {stream.tokensEarned} earned
+                  <span style={{ fontSize: '13px', color: '#FFFFFF', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <SparksIcon size={14} /> {stream.tokensEarned}
                   </span>
                 </div>
               </div>
             </div>
 
             <button className="btn-primary" style={{ width: '100%' }}>
-              🍿 Watch Broadcast & Send Gifts
+              Watch Broadcast & Send Gifts
             </button>
           </div>
         ))}

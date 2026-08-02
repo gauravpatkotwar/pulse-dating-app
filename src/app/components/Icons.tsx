@@ -128,12 +128,13 @@ export function GiftCrownIcon({ size = 24, color = "#FFFFFF" }: IconProps) {
   );
 }
 
-// 13. Minimalist Line-Art Avatars
+// 13. PROPRIETARY CUSTOM INVENTED ARCHITECTURAL AVATARS (No OS Emojis)
 export function AvatarMale({ size = 48, color = "#FFFFFF" }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="24" cy="18" r="8" stroke={color} strokeWidth="2" />
-      <path d="M10 40C10 32.268 16.268 26 24 26C31.732 26 38 32.268 38 40" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      {/* Square Chamfered Architectural Male Silhouette */}
+      <rect x="16" y="8" width="16" height="16" rx="4" stroke={color} strokeWidth="2" fill="rgba(255,255,255,0.06)" />
+      <path d="M8 40C8 31 15 26 24 26C33 26 40 31 40 40" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -141,10 +142,20 @@ export function AvatarMale({ size = 48, color = "#FFFFFF" }: IconProps) {
 export function AvatarFemale({ size = 48, color = "#FFFFFF" }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="24" cy="16" r="7" stroke={color} strokeWidth="2" />
-      <path d="M14 16C12 24 10 26 10 30" stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <path d="M34 16C36 24 38 26 38 30" stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <path d="M12 40C12 33.3726 17.3726 28 24 28C30.6274 28 36 33.3726 36 40" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      {/* Circular Smooth Architectural Female Silhouette */}
+      <circle cx="24" cy="15" r="8" stroke={color} strokeWidth="2" fill="rgba(255,255,255,0.06)" />
+      <path d="M12 40C12 32 17 26 24 26C31 26 36 32 36 40" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M14 18C12 24 10 26 10 32M34 18C36 24 38 26 38 32" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+    </svg>
+  );
+}
+
+export function AvatarOther({ size = 48, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Diamond Cyber Anonymous Avatar */}
+      <rect x="16" y="8" width="16" height="16" rx="8" transform="rotate(45 24 16)" stroke={color} strokeWidth="2" fill="rgba(255,255,255,0.06)" />
+      <path d="M10 40C10 32 16 27 24 27C32 27 38 32 38 40" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
