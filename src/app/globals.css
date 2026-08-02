@@ -15,6 +15,11 @@
   --shadow-stealth-glow: 0 20px 60px rgba(0, 0, 0, 0.95);
 }
 
+/* Global Instant Click & Hardware Acceleration */
+* {
+  touch-action: manipulation; /* Removes 300ms mobile click delay */
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
@@ -37,23 +42,29 @@ h1, h2, h3, h4 {
   color: #FFFFFF;
 }
 
-/* Asymmetric Matte Black Chamfered Glass Panel */
+/* Instant-Response Chamfered Glass Panel */
 .glass-panel {
   background: var(--card-bg);
-  backdrop-filter: blur(var(--blur-radius));
-  -webkit-backdrop-filter: blur(var(--blur-radius));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: 36px 8px 36px 8px; /* Asymmetric Architectural Geometry */
   padding: 28px;
   box-shadow: var(--shadow-stealth-glow), var(--inset-hairline);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1), border-color 0.15s ease, box-shadow 0.15s ease;
+  will-change: transform;
   position: relative;
 }
 
 .glass-panel:hover {
   border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-6px) perspective(1000px) rotateX(1.5deg) rotateY(-1.5deg);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 1), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  transform: translateY(-4px) perspective(1000px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 1), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+}
+
+.glass-panel:active {
+  transform: translateY(0px) scale(0.985);
+  transition: transform 0.05s ease !important;
 }
 
 /* VIP Matte Card */
@@ -66,10 +77,15 @@ h1, h2, h3, h4 {
 
 .glass-panel-vip:hover {
   border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 1), inset 0 1px 3px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 1), inset 0 1px 3px rgba(255, 255, 255, 0.45);
 }
 
-/* Matte White High-Contrast Button */
+.glass-panel-vip:active {
+  transform: scale(0.985);
+  transition: transform 0.05s ease !important;
+}
+
+/* Instant Tactile Button Feedback */
 .btn-primary {
   background: #FFFFFF;
   color: #000000;
@@ -79,7 +95,8 @@ h1, h2, h3, h4 {
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+  will-change: transform;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -89,8 +106,13 @@ h1, h2, h3, h4 {
 
 .btn-primary:hover {
   background: #EAEAEA;
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 35px rgba(255, 255, 255, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(1px) scale(0.96) !important;
+  transition: transform 0.05s ease !important;
 }
 
 /* Stealth Outline Button */
@@ -103,13 +125,19 @@ h1, h2, h3, h4 {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  will-change: transform;
 }
 
 .btn-outline:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
+}
+
+.btn-outline:active {
+  transform: translateY(1px) scale(0.96) !important;
+  transition: transform 0.05s ease !important;
 }
 
 /* Input Fields */

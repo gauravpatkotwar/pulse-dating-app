@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAppContext } from "../context/AppContext";
 import { 
   DiscoverIcon, 
@@ -16,6 +16,7 @@ import {
 
 export default function FloatingDock() {
   const pathname = usePathname();
+  const router = useRouter();
   const { profile } = useAppContext();
 
   const dockItems = [
@@ -51,6 +52,9 @@ export default function FloatingDock() {
           <Link
             key={item.href}
             href={item.href}
+            onMouseEnter={() => {
+              try { router.prefetch(item.href); } catch (e) {}
+            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -65,7 +69,7 @@ export default function FloatingDock() {
               textDecoration: "none",
               fontWeight: isActive ? 800 : 500,
               fontSize: "14px",
-              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+              transition: "transform 0.1s ease, background 0.1s ease",
               position: "relative",
             }}
           >
