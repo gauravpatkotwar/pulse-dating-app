@@ -173,6 +173,62 @@ export default function CallPage() {
     }
   };
 
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+
+  const toggleScreenShare = async () => {
+    if (!peerConnection.current || !localStream) return;
+
+    try {
+      if (!isScreenSharing) {
+        // Request screen share
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        const screenTrack = screenStream.getVideoTracks()[0];
+
+        // Replace the track being sent to the peer
+        const sender = peerConnection.current.getSenders().find(s => s.track?.kind === 'video');
+        if (sender) {
+          sender.replaceTrack(screenTrack);
+        }
+
+        // Update local video element
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = new MediaStream([screenTrack]);
+        }
+
+        setIsScreenSharing(true);
+
+        // Listen for the user clicking "Stop sharing" on the browser's native banner
+        screenTrack.onended = () => {
+          stopScreenShare();
+        };
+      } else {
+        stopScreenShare();
+      }
+    } catch (err) {
+      console.error("Error sharing screen:", err);
+    }
+  };
+
+  const stopScreenShare = () => {
+    if (!peerConnection.current || !localStream) return;
+    
+    // Get the original camera track
+    const cameraTrack = localStream.getVideoTracks()[0];
+    
+    // Replace the track back to the camera
+    const sender = peerConnection.current.getSenders().find(s => s.track?.kind === 'video');
+    if (sender) {
+      sender.replaceTrack(cameraTrack);
+    }
+
+    // Update local video element back to camera
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStream;
+    }
+
+    setIsScreenSharing(false);
+  };
+
   const toggleMic = () => {
     if (localStream) {
       localStream.getAudioTracks()[0].enabled = !isMicOn;
@@ -232,10 +288,10 @@ export default function CallPage() {
               autoPlay 
               playsInline 
               muted 
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transform: isScreenSharing ? 'scaleX(1)' : 'scaleX(-1)' }}
             />
             <div style={{ position: 'absolute', bottom: '16px', left: '16px', background: 'rgba(0,0,0,0.5)', padding: '4px 12px', borderRadius: '100px', fontSize: '14px', zIndex: 10 }}>
-              You
+              {isScreenSharing ? "Your Screen" : "You"}
             </div>
           </div>
         </div>
@@ -261,19 +317,38 @@ export default function CallPage() {
           
           <button 
             onClick={toggleCam}
+            disabled={isScreenSharing}
             style={{
               padding: '16px 24px',
               borderRadius: '100px',
               border: 'none',
-              background: isCamOn ? 'rgba(255,255,255,0.1)' : '#FF5C5C',
+              background: isCamOn && !isScreenSharing ? 'rgba(255,255,255,0.1)' : '#FF5C5C',
               color: 'white',
+              fontSize: '16px',
+              cursor: isScreenSharing ? 'not-allowed' : 'pointer',
+              fontWeight: 600,
+              transition: 'background 0.2s',
+              opacity: isScreenSharing ? 0.5 : 1
+            }}
+          >
+            {isCamOn ? "📹 Cam Off" : "📸 Cam On"}
+          </button>
+
+          <button 
+            onClick={toggleScreenShare}
+            style={{
+              padding: '16px 24px',
+              borderRadius: '100px',
+              border: 'none',
+              background: isScreenSharing ? 'var(--accent-lime)' : 'rgba(255,255,255,0.1)',
+              color: isScreenSharing ? 'black' : 'white',
               fontSize: '16px',
               cursor: 'pointer',
               fontWeight: 600,
               transition: 'background 0.2s'
             }}
           >
-            {isCamOn ? "📹 Cam Off" : "📸 Cam On"}
+            💻 {isScreenSharing ? "Stop Sharing" : "Share Screen"}
           </button>
 
           <button 
