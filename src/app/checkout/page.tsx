@@ -22,6 +22,7 @@ export default function CheckoutPage() {
 
   // India PPP Special Products (Affordable Local Pricing)
   const indiaProducts = [
+    { name: "₹1 Platform Entry Pass", price: "₹1", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj', note: "🛡️ Mandatory 1-Time Anti-Bot Platform Fee (~$0.01)" },
     { name: "Daily Pass", price: "₹9/day", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj', note: "⚡ 24-Hour Unlimited Access (~$0.11/day)" },
     { name: "Weekly Pulse Pass", price: "₹59/week", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj', note: "🔥 Most Popular in India! (~$0.70/wk)" },
     { name: "Monthly Pro Pass", price: "₹199/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m80p6aw3esp2favvphfnj', note: "Save 20% over weekly" },

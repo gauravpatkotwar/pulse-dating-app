@@ -15,7 +15,8 @@ export interface UserProfile {
   gender?: string;
   bio?: string;
   
-  // Heavy Profile Data (Creator Platform)
+  // Platform Entry Pass & Heavy Profile Data
+  isActivated?: boolean; // ₹1 Platform Entry Pass
   isVerified?: boolean;
   subscriberCount?: number;
   gallery?: string[]; // Array of image URLs
@@ -48,6 +49,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>({
     tokens: 1500,
     isPremium: true,
+    isActivated: true, // ₹1 Entry Fee Paid
     onboardingComplete: true,
     displayName: "Jane Doe",
     age: 24,
