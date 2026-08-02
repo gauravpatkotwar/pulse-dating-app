@@ -10,7 +10,8 @@ import {
   ClubsIcon, 
   MarketIcon, 
   SparksIcon, 
-  ProfileIcon 
+  ProfileIcon,
+  CurrencyCoinIcon 
 } from "./Icons";
 
 export default function FloatingDock() {
@@ -22,7 +23,7 @@ export default function FloatingDock() {
     { label: "Live", href: "/live", icon: <LiveIcon size={18} />, badge: "LIVE" },
     { label: "Clubs", href: "/clubs", icon: <ClubsIcon size={18} /> },
     { label: "Market", href: "/marketplace", icon: <MarketIcon size={18} /> },
-    { label: "Sparks", href: "/checkout", icon: <SparksIcon size={18} />, value: `${profile?.tokens || 0}` },
+    { label: "Sparks", href: "/checkout", icon: <CurrencyCoinIcon size={18} />, value: `${profile?.tokens || 0}` },
     { label: "Profile", href: "/profile", icon: <ProfileIcon size={18} /> },
   ];
 

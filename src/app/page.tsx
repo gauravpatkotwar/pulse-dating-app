@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import LiveTicker from "./components/LiveTicker";
 import OrbitalRadar from "./components/OrbitalRadar";
 import DiscoverDeck from "./components/DiscoverDeck";
+import { CurrencyCoinIcon } from "./components/Icons";
 import Logo from "./components/Logo";
 
 export default function Home() {
@@ -38,10 +39,12 @@ export default function Home() {
             <Link href="/checkout" style={{ 
               display: 'flex', alignItems: 'center', gap: '8px', 
               background: 'rgba(255, 255, 255, 0.05)', padding: '8px 20px', 
-              borderRadius: '100px 12px 100px 12px', border: '1px solid rgba(255, 255, 255, 0.15)',
-              textDecoration: 'none', color: '#FFFFFF'
+              borderRadius: '100px 12px 100px 12px', border: '1px solid rgba(255, 255, 255, 0.2)',
+              textDecoration: 'none', color: '#FFFFFF',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2)'
             }}>
-              <span style={{ color: '#FFFFFF', fontWeight: 800 }}>✨ {profile?.tokens || 0}</span>
+              <CurrencyCoinIcon size={16} />
+              <span style={{ color: '#FFFFFF', fontWeight: 800 }}>{profile?.tokens || 0}</span>
               <span style={{ fontSize: '13px', color: '#888888' }}>Sparks</span>
             </Link>
           </div>

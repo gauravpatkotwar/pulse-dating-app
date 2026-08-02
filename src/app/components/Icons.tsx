@@ -166,3 +166,13 @@ export function HeartbeatIcon({ size = 20, color = "#FFFFFF" }: IconProps) {
     </svg>
   );
 }
+
+// 16. Luxury Stealth Currency Coin Icon
+export function CurrencyCoinIcon({ size = 20, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2" fill="rgba(255,255,255,0.06)" />
+      <path d="M12 7L13.5 10.5L17 12L13.5 13.5L12 17L10.5 13.5L7 12L10.5 10.5L12 7Z" fill={color} />
+    </svg>
+  );
+}
