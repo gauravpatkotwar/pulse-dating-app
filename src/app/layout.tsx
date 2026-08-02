@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "./context/AppContext";
+import FloatingDock from "./components/FloatingDock";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 
 export const metadata: Metadata = {
-  title: "Pulse - Premium Anonymous Dating",
+  title: "Pulse - Matte Black Stealth Network",
   description: "Connect safely and anonymously on Pulse.",
 };
 
@@ -17,9 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.variable}>
+      <body className={spaceGrotesk.variable}>
         <AppProvider>
           {children}
+          <FloatingDock />
         </AppProvider>
       </body>
     </html>

@@ -24,23 +24,23 @@ export default function LiveTicker() {
 
   return (
     <div style={{
-      background: 'rgba(255, 215, 0, 0.05)',
-      border: '1px solid rgba(255, 215, 0, 0.2)',
+      background: 'rgba(255, 255, 255, 0.03)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
       borderRadius: '100px',
       padding: '8px 20px',
       display: 'flex',
       alignItems: 'center',
       gap: '12px',
       fontSize: '13px',
-      color: '#FFD700',
-      backdropFilter: 'blur(10px)',
-      boxShadow: '0 0 20px rgba(255, 215, 0, 0.1)',
+      color: '#FFFFFF',
+      backdropFilter: 'blur(16px)',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
       maxWidth: 'fit-content',
       margin: '0 auto 24px auto'
     }}>
       <span className="live-dot" />
-      <span style={{ fontWeight: 600, letterSpacing: '0.02em' }}>LIVE PULSE ACTIVITY:</span>
-      <span style={{ color: '#fff', transition: 'all 0.3s ease' }}>
+      <span style={{ fontWeight: 800, letterSpacing: '0.04em', fontSize: '11px', color: '#AAAAAA' }}>PULSE LIVE LOG:</span>
+      <span style={{ color: '#FFFFFF', fontWeight: 500, transition: 'all 0.3s ease' }}>
         {liveEvents[currentIndex]}
       </span>
     </div>
