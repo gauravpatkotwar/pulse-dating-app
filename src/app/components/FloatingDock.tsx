@@ -24,6 +24,7 @@ export default function FloatingDock() {
     { label: "Discover", href: "/", icon: <DiscoverIcon size={18} /> },
     { label: "Live", href: "/live", icon: <LiveIcon size={18} />, badge: "LIVE" },
     { label: "18+ VIP", href: "/adult", icon: <LockIcon size={18} />, badge: "18+" },
+    { label: "Darknet", href: "/darknet", icon: <LockIcon size={18} />, badge: "CIPHER" },
     { label: "Clubs", href: "/clubs", icon: <ClubsIcon size={18} /> },
     { label: "Market", href: "/marketplace", icon: <MarketIcon size={18} /> },
     { label: "Sparks", href: "/checkout", icon: <CurrencyCoinIcon size={18} />, value: `${profile?.tokens || 0}` },
