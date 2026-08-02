@@ -1,17 +1,14 @@
 "use client";
 import React from "react";
 import { useAppContext } from "../context/AppContext";
+import { useRouter } from "next/navigation";
 
 export default function Wallet() {
-  const { tokens, setTokens } = useAppContext();
+  const { tokens } = useAppContext();
+  const router = useRouter();
 
   const handleTopUp = () => {
-    // Mock top-up for the demo
-    const amount = parseInt(prompt("How many Pulse Coins would you like to buy? (e.g., 100)", "100") || "0");
-    if (amount > 0) {
-      setTokens(prev => prev + amount);
-      alert(`Success! You bought ${amount} coins.`);
-    }
+    router.push('/checkout');
   };
 
   return (

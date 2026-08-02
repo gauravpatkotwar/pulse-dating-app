@@ -5,7 +5,7 @@ import Logo from "./components/Logo";
 import { useAppContext } from "./context/AppContext";
 
 export default function Home() {
-  const { isAuthenticated, username, logout } = useAppContext();
+  const { isAuthenticated, username, logout, isPremium, setPremium } = useAppContext();
 
   return (
     <main className="app-container">
@@ -17,8 +17,8 @@ export default function Home() {
         <nav className={styles.nav}>
           <a href="#discover">Discover</a>
           <a href="/chat">Chat</a>
-          <a href="/nsfw-chat" style={{ color: '#FF5C5C', borderBottom: '1px solid #FF5C5C' }}>18+</a>
           <a href="/calls">Calls</a>
+          <a href="/adult-chat" style={{ color: '#FF5C5C', fontWeight: 600 }}>Adult 18+</a>
         </nav>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <Wallet />
@@ -112,8 +112,18 @@ export default function Home() {
 
           <div className={styles.planFooter}>
              <p className="text-muted">With our monthly and yearly plans, you have the freedom to cancel anytime.</p>
-             <button className="btn-primary" style={{ width: '100%', marginTop: '16px' }}>
-                ✨ Subscribe
+             <button 
+                className="btn-primary" 
+                onClick={() => {
+                  if (isPremium) {
+                    alert("You already have an active premium subscription.");
+                  } else {
+                    window.location.href = '/checkout';
+                  }
+                }}
+                style={{ width: '100%', marginTop: '16px', background: isPremium ? '#C4F042' : undefined, color: isPremium ? '#000' : undefined }}
+             >
+                {isPremium ? '✅ Premium Active' : '✨ Subscribe via Paddle'}
              </button>
           </div>
         </div>

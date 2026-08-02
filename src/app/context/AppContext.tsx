@@ -9,6 +9,8 @@ type AppContextType = {
   deductTokens: (amount: number) => boolean;
   username: string;
   isAuthenticated: boolean;
+  isPremium: boolean;
+  setPremium: (status: boolean) => void;
   login: (email: string) => void;
   loginAnonymous: () => void;
   logout: () => void;
@@ -20,6 +22,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [tokens, setTokens] = useState<number>(0);
   const [username, setUsername] = useState<string>("Anonymous Fox");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isPremium, setIsPremium] = useState<boolean>(false);
   
   const router = useRouter();
   const pathname = usePathname();
@@ -28,6 +31,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const savedTokens = localStorage.getItem("pulse_tokens");
     if (savedTokens) setTokens(parseInt(savedTokens));
     
+    const savedPremium = localStorage.getItem("pulse_premium");
+    if (savedPremium === "true") setIsPremium(true);
+
     const savedAuth = localStorage.getItem("pulse_auth");
     const savedUser = localStorage.getItem("pulse_user");
     if (savedAuth === "true") {
@@ -41,6 +47,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem("pulse_tokens", tokens.toString());
   }, [tokens]);
+
+  const setPremium = (status: boolean) => {
+    setIsPremium(status);
+    localStorage.setItem("pulse_premium", status ? "true" : "false");
+  };
 
   const deductTokens = (amount: number) => {
     if (tokens >= amount) {
@@ -73,7 +84,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AppContext.Provider value={{ tokens, setTokens, deductTokens, username, isAuthenticated, login, loginAnonymous, logout }}>
+    <AppContext.Provider value={{ tokens, setTokens, deductTokens, username, isAuthenticated, isPremium, setPremium, login, loginAnonymous, logout }}>
       {children}
     </AppContext.Provider>
   );
