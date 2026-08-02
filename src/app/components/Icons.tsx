@@ -187,3 +187,48 @@ export function CurrencyCoinIcon({ size = 20, color = "#FFFFFF" }: IconProps) {
     </svg>
   );
 }
+
+// 17. Social Media Links Icons
+export function InstagramIcon({ size = 18, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="20" height="20" rx="6" stroke={color} strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" stroke={color} strokeWidth="2" />
+      <circle cx="17.5" cy="6.5" r="1.5" fill={color} />
+    </svg>
+  );
+}
+
+export function FacebookIcon({ size = 18, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function TikTokIcon({ size = 18, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 12A4 4 0 1 0 13 16V2A7 7 0 0 0 20 9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function YouTubeIcon({ size = 18, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="4" width="20" height="16" rx="4" stroke={color} strokeWidth="2" />
+      <path d="M10 9L15 12L10 15V9Z" fill={color} />
+    </svg>
+  );
+}
+
+export function WebsiteIcon({ size = 18, color = "#FFFFFF" }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="2" />
+      <path d="M2 12H22M12 2C14.5 4.5 16 8 16 12C16 16 14.5 19.5 12 22C9.5 19.5 8 16 8 12C8 8 9.5 4.5 12 2Z" stroke={color} strokeWidth="2" />
+    </svg>
+  );
+}

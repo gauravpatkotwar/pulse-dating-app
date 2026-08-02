@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAppContext } from "../context/AppContext";
-import { AvatarFemale, AvatarMale, AvatarOther } from "../components/Icons";
+import { AvatarFemale, AvatarMale, AvatarOther, InstagramIcon, FacebookIcon, TikTokIcon, YouTubeIcon, WebsiteIcon } from "../components/Icons";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -15,6 +15,14 @@ export default function ProfilePage() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [bio, setBio] = useState("");
+
+  // Social Media Links state
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [tiktok, setTiktok] = useState("");
+  const [youtube, setYoutube] = useState("");
+  const [website, setWebsite] = useState("");
+
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -25,6 +33,14 @@ export default function ProfilePage() {
       setAge(profile.age?.toString() || "");
       setGender(profile.gender || "");
       setBio(profile.bio || "");
+
+      if (profile.socialLinks) {
+        setInstagram(profile.socialLinks.instagram || "");
+        setFacebook(profile.socialLinks.facebook || "");
+        setTiktok(profile.socialLinks.tiktok || "");
+        setYoutube(profile.socialLinks.youtube || "");
+        setWebsite(profile.socialLinks.website || "");
+      }
     }
   }, [profile]);
 
@@ -35,6 +51,14 @@ export default function ProfilePage() {
     setIsSaving(true);
     setMessage("");
 
+    const socialLinks = {
+      instagram,
+      facebook,
+      tiktok,
+      youtube,
+      website
+    };
+
     try {
       if (user.uid !== 'mock-user-id') {
         const userDocRef = doc(db, "users", user.uid);
@@ -43,9 +67,18 @@ export default function ProfilePage() {
           age: parseInt(age) || null,
           gender,
           bio,
+          socialLinks
         });
       }
-      setMessage("Profile updated successfully!");
+      // Local state update for mock user
+      if (profile) {
+        profile.displayName = displayName;
+        profile.age = parseInt(age) || undefined;
+        profile.gender = gender;
+        profile.bio = bio;
+        profile.socialLinks = socialLinks;
+      }
+      setMessage("Profile & Social Links updated successfully!");
     } catch (error: any) {
       console.error(error);
       setMessage("Error updating profile.");
@@ -59,11 +92,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-      <div className="glass-panel" style={{ width: '100%', maxWidth: '500px' }}>
+    <main className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: '40px 24px' }}>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '540px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 className="h2" style={{ margin: 0 }}>My Profile</h2>
+          <h2 className="h2" style={{ margin: 0 }}>Edit Stealth Profile</h2>
           <button 
             onClick={() => router.push('/')}
             style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}
@@ -133,28 +166,88 @@ export default function ProfilePage() {
             <textarea 
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              style={{ width: '100%', minHeight: '100px', resize: 'vertical' }}
+              style={{ width: '100%', minHeight: '80px', resize: 'vertical' }}
               placeholder="Tell others about yourself..."
             />
           </div>
 
+          {/* Social Media App Links Section */}
+          <div style={{ borderTop: "1px solid var(--card-border)", paddingTop: "16px", marginTop: "8px" }}>
+            <label style={{ display: "block", marginBottom: "12px", color: "#FFFFFF", fontSize: "14px", fontWeight: 800 }}>
+              🔗 Connected App & Social Links (Publicly Clickable)
+            </label>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <InstagramIcon size={20} />
+                <input 
+                  type="url" 
+                  value={instagram} 
+                  onChange={(e) => setInstagram(e.target.value)} 
+                  placeholder="https://instagram.com/yourhandle" 
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px" }} 
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <FacebookIcon size={20} />
+                <input 
+                  type="url" 
+                  value={facebook} 
+                  onChange={(e) => setFacebook(e.target.value)} 
+                  placeholder="https://facebook.com/yourprofile" 
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px" }} 
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <TikTokIcon size={20} />
+                <input 
+                  type="url" 
+                  value={tiktok} 
+                  onChange={(e) => setTiktok(e.target.value)} 
+                  placeholder="https://tiktok.com/@yourhandle" 
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px" }} 
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <YouTubeIcon size={20} />
+                <input 
+                  type="url" 
+                  value={youtube} 
+                  onChange={(e) => setYoutube(e.target.value)} 
+                  placeholder="https://youtube.com/@yourchannel" 
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px" }} 
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <WebsiteIcon size={20} />
+                <input 
+                  type="url" 
+                  value={website} 
+                  onChange={(e) => setWebsite(e.target.value)} 
+                  placeholder="https://yourwebsite.com" 
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px" }} 
+                />
+              </div>
+            </div>
+          </div>
+
           {message && (
-            <p style={{ 
-              color: message.includes("Error") ? "#FF5C5C" : "var(--accent-primary)", 
-              textAlign: "center", 
-              margin: 0 
+            <div style={{ 
+              color: message.includes('Error') ? 'var(--accent-danger)' : '#FFFFFF', 
+              fontSize: '14px', 
+              textAlign: 'center',
+              fontWeight: 700 
             }}>
               {message}
-            </p>
+            </div>
           )}
 
-          <button 
-            type="submit" 
-            className="btn-primary" 
-            style={{ width: '100%', marginTop: '8px' }}
-            disabled={isSaving}
-          >
-            {isSaving ? "Saving..." : "Save Profile"}
+          <button type="submit" className="btn-primary" disabled={isSaving} style={{ marginTop: '8px' }}>
+            {isSaving ? 'Saving Changes...' : 'Save Profile & Social Links'}
           </button>
         </form>
       </div>

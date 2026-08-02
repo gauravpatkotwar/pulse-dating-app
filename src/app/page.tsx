@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import LiveTicker from "./components/LiveTicker";
 import OrbitalRadar from "./components/OrbitalRadar";
 import DiscoverDeck from "./components/DiscoverDeck";
-import { CurrencyCoinIcon, AvatarMale, AvatarFemale, AvatarOther, VerifiedBadgeIcon } from "./components/Icons";
+import { CurrencyCoinIcon, AvatarMale, AvatarFemale, AvatarOther, VerifiedBadgeIcon, InstagramIcon, FacebookIcon, TikTokIcon, YouTubeIcon, WebsiteIcon } from "./components/Icons";
 import Logo from "./components/Logo";
 
 export default function Home() {
@@ -91,6 +91,37 @@ export default function Home() {
                   🛡️ VERIFIED
                 </span>
               </div>
+
+              {/* Clickable Public Social Media Links */}
+              {profile?.socialLinks && (
+                <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  {profile.socialLinks.instagram && (
+                    <a href={profile.socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ padding: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <InstagramIcon size={16} />
+                    </a>
+                  )}
+                  {profile.socialLinks.facebook && (
+                    <a href={profile.socialLinks.facebook} target="_blank" rel="noopener noreferrer" style={{ padding: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <FacebookIcon size={16} />
+                    </a>
+                  )}
+                  {profile.socialLinks.tiktok && (
+                    <a href={profile.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" style={{ padding: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <TikTokIcon size={16} />
+                    </a>
+                  )}
+                  {profile.socialLinks.youtube && (
+                    <a href={profile.socialLinks.youtube} target="_blank" rel="noopener noreferrer" style={{ padding: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <YouTubeIcon size={16} />
+                    </a>
+                  )}
+                  {profile.socialLinks.website && (
+                    <a href={profile.socialLinks.website} target="_blank" rel="noopener noreferrer" style={{ padding: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <WebsiteIcon size={16} />
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Stats Row */}

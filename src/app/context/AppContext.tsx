@@ -15,6 +15,15 @@ export interface UserProfile {
   gender?: string;
   bio?: string;
   
+  // Social Links
+  socialLinks?: {
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
+    youtube?: string;
+    website?: string;
+  };
+
   // Platform Entry Pass & Heavy Profile Data
   isActivated?: boolean; // ₹1 Platform Entry Pass
   isVerified?: boolean;
@@ -58,6 +67,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isVerified: true,
     subscriberCount: 1420,
     subscriptionPrice: 50,
+    socialLinks: {
+      instagram: "https://instagram.com",
+      facebook: "https://facebook.com",
+      tiktok: "https://tiktok.com",
+      youtube: "https://youtube.com",
+      website: "https://pulse.app"
+    },
     gallery: [],
     lockedContent: []
   });
