@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { AvatarFemale, AvatarMale, VerifiedBadgeIcon, VideoIcon } from "./Icons";
 
 interface DeckCard {
   id: string;
   name: string;
   age: number;
-  avatar: string;
+  gender: "Female" | "Male";
   verified: boolean;
   bio: string;
   sparksRate: number;
@@ -19,31 +20,31 @@ const mockDeck: DeckCard[] = [
     id: "d1",
     name: "Elena V.",
     age: 23,
-    avatar: "👩",
+    gender: "Female",
     verified: true,
     bio: "Fitness coach & tech lover. Looking for deep conversations & live workout sessions.",
     sparksRate: 50,
-    interests: ["🏋️‍♀️ Fitness", "🎧 Techno", "☕ Espresso"]
+    interests: ["Fitness", "Techno", "Espresso"]
   },
   {
     id: "d2",
     name: "Sophia R.",
     age: 25,
-    avatar: "👩",
+    gender: "Female",
     verified: true,
     bio: "Music producer & late-night DJ streamer. Let's talk vinyl & web3.",
     sparksRate: 100,
-    interests: ["🎧 DJ Live", "🎨 Art", "🌙 3 AM Talks"]
+    interests: ["DJ Live", "Art", "3 AM Talks"]
   },
   {
     id: "d3",
     name: "Alex M.",
     age: 27,
-    avatar: "👦",
+    gender: "Male",
     verified: true,
     bio: "Startup founder building AI tools. Always up for an impromptu video call.",
     sparksRate: 30,
-    interests: ["💻 AI", "🚀 Startups", "🍿 Sci-Fi"]
+    interests: ["AI", "Startups", "Sci-Fi"]
   }
 ];
 
@@ -89,32 +90,31 @@ export default function DiscoverDeck() {
           display: "flex",
           flexDirection: "column",
           gap: "20px",
-          boxShadow: "0 30px 70px rgba(0,0,0,0.9), 0 0 40px rgba(255,0,85,0.2)"
+          boxShadow: "0 30px 70px rgba(0,0,0,0.95)"
         }}
       >
-        {/* Card Header & Avatar */}
+        {/* Card Header & Vector Avatar */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{
-            width: "72px",
-            height: "72px",
+            width: "64px",
+            height: "64px",
             borderRadius: "50%",
-            background: "rgba(0,0,0,0.6)",
-            border: "2px solid var(--accent-cyan)",
+            background: "rgba(0,0,0,0.8)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "36px"
           }}>
-            {card.avatar}
+            {card.gender === "Female" ? <AvatarFemale size={36} /> : <AvatarMale size={36} />}
           </div>
 
           <div>
             <h3 style={{ margin: "0 0 4px 0", fontSize: "22px", display: "flex", alignItems: "center", gap: "8px" }}>
               {card.name}, {card.age}
-              {card.verified && <span style={{ color: "#1D9BF0", fontSize: "16px" }}>✓</span>}
+              {card.verified && <VerifiedBadgeIcon size={16} />}
             </h3>
-            <span style={{ fontSize: "12px", color: "var(--accent-primary)", fontWeight: 700 }}>
-              ⚡ {card.sparksRate} Sparks / min Call
+            <span style={{ fontSize: "12px", color: "#FFFFFF", fontWeight: 700 }}>
+              ✨ {card.sparksRate} Sparks / min Call
             </span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function DiscoverDeck() {
                 fontSize: "12px",
                 padding: "6px 14px",
                 borderRadius: "100px",
-                background: "rgba(255, 255, 255, 0.06)",
+                background: "rgba(255, 255, 255, 0.05)",
                 border: "1px solid var(--card-border)",
                 color: "#E0E0E0"
               }}
@@ -150,7 +150,7 @@ export default function DiscoverDeck() {
             className="btn-outline"
             style={{ flex: 1, padding: "12px 0", textAlign: "center" }}
           >
-            ⏭️ Pass
+            Pass
           </button>
 
           <button 
@@ -158,7 +158,7 @@ export default function DiscoverDeck() {
             className="btn-primary"
             style={{ flex: 1, padding: "12px 0", textAlign: "center" }}
           >
-            📸 Call Now
+            <VideoIcon size={16} color="#000" /> Call Now
           </button>
         </div>
       </div>

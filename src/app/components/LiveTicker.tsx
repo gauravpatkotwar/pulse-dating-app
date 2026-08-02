@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SparksIcon, LiveIcon, ClubsIcon, MarketIcon, VerifiedBadgeIcon } from "./Icons";
 
 const liveEvents = [
-  "✨ Alex S. unlocked Delhi VIP Alpha Club (500 Sparks)",
-  "🎙️ 1,420 users currently connected in live P2P video calls",
-  "✨ Sarah M. tipped 250 Sparks on a Live Stream",
-  "🛡️ Vikram R. activated ₹1 Anti-Bot Platform Pass",
-  "💎 New 1-on-1 Fitness Session booked on Marketplace",
-  "⭐ Priya K. created Mumbai Terrace Music Lounge Club"
+  { icon: <ClubsIcon size={14} />, text: "Alex S. unlocked Delhi VIP Alpha Club (500 Sparks)" },
+  { icon: <LiveIcon size={14} />, text: "1,420 users currently connected in live P2P video calls" },
+  { icon: <SparksIcon size={14} />, text: "Sarah M. tipped 250 Sparks on a Live Stream" },
+  { icon: <VerifiedBadgeIcon size={14} />, text: "Vikram R. activated ₹1 Anti-Bot Platform Pass" },
+  { icon: <MarketIcon size={14} />, text: "New 1-on-1 Fitness Session booked on Marketplace" },
 ];
 
 export default function LiveTicker() {
@@ -21,6 +21,8 @@ export default function LiveTicker() {
 
     return () => clearInterval(timer);
   }, []);
+
+  const currentEvent = liveEvents[currentIndex];
 
   return (
     <div style={{
@@ -40,9 +42,10 @@ export default function LiveTicker() {
     }}>
       <span className="live-dot" />
       <span style={{ fontWeight: 800, letterSpacing: '0.04em', fontSize: '11px', color: '#AAAAAA' }}>PULSE LIVE LOG:</span>
-      <span style={{ color: '#FFFFFF', fontWeight: 500, transition: 'all 0.3s ease' }}>
-        {liveEvents[currentIndex]}
-      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: "6px", color: '#FFFFFF', fontWeight: 500 }}>
+        {currentEvent.icon}
+        <span>{currentEvent.text}</span>
+      </div>
     </div>
   );
 }

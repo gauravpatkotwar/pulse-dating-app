@@ -4,18 +4,26 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppContext } from "../context/AppContext";
+import { 
+  DiscoverIcon, 
+  LiveIcon, 
+  ClubsIcon, 
+  MarketIcon, 
+  SparksIcon, 
+  ProfileIcon 
+} from "./Icons";
 
 export default function FloatingDock() {
   const pathname = usePathname();
   const { profile } = useAppContext();
 
   const dockItems = [
-    { label: "Discover", href: "/", icon: "⚡" },
-    { label: "Live", href: "/live", icon: "🔴", badge: "LIVE" },
-    { label: "Clubs", href: "/clubs", icon: "🏰" },
-    { label: "Market", href: "/marketplace", icon: "🛍️" },
-    { label: "Sparks", href: "/checkout", icon: "✨", value: `${profile?.tokens || 0}` },
-    { label: "Profile", href: "/profile", icon: "👤" },
+    { label: "Discover", href: "/", icon: <DiscoverIcon size={18} /> },
+    { label: "Live", href: "/live", icon: <LiveIcon size={18} />, badge: "LIVE" },
+    { label: "Clubs", href: "/clubs", icon: <ClubsIcon size={18} /> },
+    { label: "Market", href: "/marketplace", icon: <MarketIcon size={18} /> },
+    { label: "Sparks", href: "/checkout", icon: <SparksIcon size={18} />, value: `${profile?.tokens || 0}` },
+    { label: "Profile", href: "/profile", icon: <ProfileIcon size={18} /> },
   ];
 
   return (
@@ -45,7 +53,7 @@ export default function FloatingDock() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "6px",
+              gap: "8px",
               padding: "10px 16px",
               borderRadius: "100px",
               color: isActive ? "#FFFFFF" : "#777777",
@@ -60,7 +68,7 @@ export default function FloatingDock() {
               position: "relative",
             }}
           >
-            <span style={{ fontSize: "16px" }}>{item.icon}</span>
+            <span style={{ display: "flex", alignItems: "center" }}>{item.icon}</span>
             <span>{item.label}</span>
             
             {item.value && (

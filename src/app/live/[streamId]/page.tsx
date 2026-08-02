@@ -3,19 +3,21 @@
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAppContext } from "../../context/AppContext";
+import { GiftRoseIcon, GiftDiamondIcon, GiftRocketIcon, GiftCrownIcon } from "../../components/Icons";
 
 interface Gift {
   id: string;
   name: string;
+  icon: React.ReactNode;
   emoji: string;
   coins: number;
 }
 
 const giftsCatalog: Gift[] = [
-  { id: "g1", name: "Rose", emoji: "🌹", coins: 10 },
-  { id: "g2", name: "Diamond", emoji: "💎", coins: 50 },
-  { id: "g3", name: "Rocket", emoji: "🚀", coins: 200 },
-  { id: "g4", name: "Gold Crown", emoji: "👑", coins: 1000 },
+  { id: "g1", name: "Rose", icon: <GiftRoseIcon size={22} />, emoji: "🌹", coins: 10 },
+  { id: "g2", name: "Diamond", icon: <GiftDiamondIcon size={22} />, emoji: "💎", coins: 50 },
+  { id: "g3", name: "Rocket", icon: <GiftRocketIcon size={22} />, emoji: "🚀", coins: 200 },
+  { id: "g4", name: "Crown", icon: <GiftCrownIcon size={22} />, emoji: "👑", coins: 1000 },
 ];
 
 interface ChatMessage {
@@ -212,10 +214,10 @@ export default function LiveRoomPage() {
                     alignItems: "center",
                     padding: "8px",
                     borderRadius: "12px",
-                    borderColor: "rgba(255,215,0,0.2)",
+                    borderColor: "rgba(255,255,255,0.15)",
                   }}
                 >
-                  <span style={{ fontSize: "24px" }}>{gift.emoji}</span>
+                  <span>{gift.icon}</span>
                   <span style={{ fontSize: "12px", fontWeight: 600, marginTop: "2px" }}>{gift.name}</span>
                   <span style={{ fontSize: "11px", color: "var(--accent-primary)" }}>🪙 {gift.coins}</span>
                 </button>

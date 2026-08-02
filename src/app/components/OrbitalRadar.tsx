@@ -2,22 +2,23 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { LiveIcon, ClubsIcon, VideoIcon } from "./Icons";
 
 interface RadarNode {
   id: string;
   name: string;
   type: "stream" | "club" | "match";
-  icon: string;
+  icon: React.ReactNode;
   badge: string;
   href: string;
   angle: number; // Position on orbit in degrees
 }
 
 const radarNodes: RadarNode[] = [
-  { id: "r1", name: "Sophia's Live DJ Stream", type: "stream", icon: "🎸", badge: "🔴 1.4k Live", href: "/live/stream-1", angle: 0 },
-  { id: "r2", name: "Delhi Tech VIP Club", type: "club", icon: "⚡", badge: "👑 500 Sparks", href: "/clubs", angle: 90 },
-  { id: "r3", name: "Alex (Crypto AMA)", type: "stream", icon: "💻", badge: "🔴 890 Live", href: "/live/stream-2", angle: 180 },
-  { id: "r4", name: "Mumbai Music Lounges", type: "club", icon: "🎧", badge: "👥 890 Members", href: "/clubs", angle: 270 }
+  { id: "r1", name: "Sophia's Live DJ Stream", type: "stream", icon: <LiveIcon size={18} />, badge: "🔴 1.4k Live", href: "/live/stream-1", angle: 0 },
+  { id: "r2", name: "Delhi Tech VIP Club", type: "club", icon: <ClubsIcon size={18} />, badge: "✨ 500 Sparks", href: "/clubs", angle: 90 },
+  { id: "r3", name: "Alex (Crypto AMA)", type: "stream", icon: <LiveIcon size={18} />, badge: "🔴 890 Live", href: "/live/stream-2", angle: 180 },
+  { id: "r4", name: "Mumbai Music Lounges", type: "club", icon: <ClubsIcon size={18} />, badge: "👥 890 Members", href: "/clubs", angle: 270 }
 ];
 
 export default function OrbitalRadar() {
@@ -97,7 +98,7 @@ export default function OrbitalRadar() {
                   transition: "transform 0.2s"
                 }}
               >
-                <span style={{ fontSize: "18px" }}>{node.icon}</span>
+                <span style={{ display: "flex", alignItems: "center" }}>{node.icon}</span>
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontSize: "12px", fontWeight: 700, color: "#FFFFFF" }}>{node.name}</div>
                   <div style={{ fontSize: "10px", color: "#888888" }}>{node.badge}</div>
@@ -131,8 +132,8 @@ export default function OrbitalRadar() {
         onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.08)"}
         onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
       >
-        <span style={{ fontSize: "32px", marginBottom: "2px" }}>📸</span>
-        <span style={{ fontSize: "11px", fontWeight: 900, color: "#000000", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <VideoIcon size={32} color="#000000" />
+        <span style={{ fontSize: "11px", fontWeight: 900, color: "#000000", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: "6px" }}>
           Launch Call
         </span>
         <span style={{ fontSize: "9px", color: "#555555" }}>Click to Radar Match</span>
