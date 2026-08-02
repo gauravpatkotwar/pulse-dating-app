@@ -115,7 +115,7 @@ export default function CallPage() {
         const data = snapshot.data();
         if (!peerConnection.current?.currentRemoteDescription && data?.answer) {
           const answerDescription = new RTCSessionDescription(data.answer);
-          peerConnection.current.setRemoteDescription(answerDescription);
+          peerConnection.current?.setRemoteDescription(answerDescription);
           setCallStatus("Call Connected!");
         }
       });

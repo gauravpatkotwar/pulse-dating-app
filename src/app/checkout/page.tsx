@@ -39,7 +39,7 @@ export default function CheckoutPage() {
       eventCallback: function(event) {
         if (event.name === 'checkout.completed') {
           // Paddle checkout was successful!
-          const purchasedItem = event.data?.items?.[0]?.price?.id;
+          const purchasedItem = (event.data?.items?.[0] as any)?.price?.id || (event.data?.items?.[0] as any)?.priceId;
           const product = [...globalProducts, ...indiaProducts].find(p => p.priceId === purchasedItem);
           
           if (product) {

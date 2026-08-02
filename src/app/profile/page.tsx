@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import styles from "../../page.module.css";
 import { useAppContext } from "../context/AppContext";
 
 export default function ProfilePage() {
@@ -36,13 +35,15 @@ export default function ProfilePage() {
     setMessage("");
 
     try {
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, {
-        displayName,
-        age: parseInt(age) || null,
-        gender,
-        bio,
-      });
+      if (user.uid !== 'mock-user-id') {
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          displayName,
+          age: parseInt(age) || null,
+          gender,
+          bio,
+        });
+      }
       setMessage("Profile updated successfully!");
     } catch (error: any) {
       console.error(error);
@@ -58,13 +59,13 @@ export default function ProfilePage() {
 
   return (
     <main className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-      <div className="bento-card" style={{ width: '100%', maxWidth: '500px' }}>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '500px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
           <h2 className="h2" style={{ margin: 0 }}>My Profile</h2>
           <button 
             onClick={() => router.push('/')}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '18px' }}
           >
             ✕ Close
           </button>
@@ -79,12 +80,11 @@ export default function ProfilePage() {
 
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Display Name</label>
+            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '14px' }}>Display Name</label>
             <input 
               type="text" 
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className={styles.inputField} 
               style={{ width: '100%' }}
               required 
             />
@@ -92,23 +92,21 @@ export default function ProfilePage() {
 
           <div style={{ display: 'flex', gap: '16px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Age</label>
+              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '14px' }}>Age</label>
               <input 
                 type="number" 
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
-                className={styles.inputField}
                 style={{ width: '100%' }}
                 required 
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Gender</label>
+              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '14px' }}>Gender</label>
               <select 
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className={styles.inputField}
-                style={{ width: '100%', appearance: 'none' }}
+                style={{ width: '100%' }}
                 required
               >
                 <option value="" disabled>Select Gender</option>
@@ -120,11 +118,10 @@ export default function ProfilePage() {
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Bio</label>
+            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '14px' }}>Bio</label>
             <textarea 
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className={styles.inputField}
               style={{ width: '100%', minHeight: '100px', resize: 'vertical' }}
               placeholder="Tell others about yourself..."
             />
@@ -132,7 +129,7 @@ export default function ProfilePage() {
 
           {message && (
             <p style={{ 
-              color: message.includes("Error") ? "#FF5C5C" : "var(--accent-lime)", 
+              color: message.includes("Error") ? "#FF5C5C" : "var(--accent-primary)", 
               textAlign: "center", 
               margin: 0 
             }}>
