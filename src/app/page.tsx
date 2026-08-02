@@ -5,7 +5,7 @@ import Logo from "./components/Logo";
 import { useAppContext } from "./context/AppContext";
 
 export default function Home() {
-  const { isAuthenticated, username, logout, isPremium, setPremium } = useAppContext();
+  const { isAuthenticated, username, logout, isPremium, setPremium, profile } = useAppContext();
 
   return (
     <main className="app-container">
