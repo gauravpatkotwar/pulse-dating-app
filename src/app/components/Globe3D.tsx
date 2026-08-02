@@ -297,17 +297,17 @@ export default function Globe3D() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", maxWidth: "560px", marginBottom: "8px", fontSize: "11px", fontWeight: 800, color: "#888888", letterSpacing: "0.1em" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%", maxWidth: "560px", marginBottom: "6px", fontSize: "11px", fontWeight: 800, color: "#888888", letterSpacing: "0.1em" }}>
         <span>📡 RADAR MATRIX: ACTIVE</span>
         <span>🌍 DRAG TO ROTATE 360°</span>
         <span>🌐 1,420 ONLINE</span>
       </div>
 
-      <div style={{ position: "relative", width: "100%", maxWidth: "560px", height: "480px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "relative", width: "100%", maxWidth: "540px", height: "360px", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <canvas
           ref={canvasRef}
-          width={560}
-          height={480}
+          width={540}
+          height={360}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}

@@ -1,12 +1,12 @@
 import React from "react";
 
-export default function Logo({ size = 32, showDot = true }: { size?: number; showDot?: boolean }) {
+export default function Logo({ size = 24, showDot = true }: { size?: number; showDot?: boolean }) {
   // Height ratio calculation
   const height = size;
   const width = size * 3.6;
 
   return (
-    <div style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+    <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", opacity: 0.85 }}>
       {/* Oprath-Style Deconstructed Futuristic Wordmark SVG for "pulse" */}
       <svg
         width={width}
@@ -42,29 +42,40 @@ export default function Logo({ size = 32, showDot = true }: { size?: number; sho
           strokeLinecap="round"
         />
 
-        {/* Letter 's' - Oprath style: fluid futuristic curve */}
+        {/* Letter 's' - Oprath style: S-curve */}
         <path
-          d="M145 28 C145 20, 125 20, 125 32 C125 44, 145 40, 145 50 C145 60, 125 58, 125 50"
+          d="M150 25 C135 25, 135 40, 150 40 C165 40, 165 55, 145 55"
           stroke="#FFFFFF"
           strokeWidth="8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Letter 'e' - Oprath style: circular bowl & open arch */}
+        {/* Letter 'e' - Oprath style: deconstructed loop */}
         <path
-          d="M185 40 H160 C160 25, 185 22, 185 34 C185 46, 160 56, 185 52"
+          d="M180 40 H205 C205 25, 180 20, 180 38 C180 55, 205 55, 205 48"
           stroke="#FFFFFF"
           strokeWidth="8"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-
-        {/* Stealth White Dot */}
-        {showDot && (
-          <circle cx="205" cy="52" r="5" fill="#FFFFFF" />
-        )}
       </svg>
+
+      {/* Subtle Low-Key Live Pulse Dot */}
+      {showDot && (
+        <span
+          className="live-dot"
+          style={{
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            background: "#FFFFFF",
+            opacity: 0.6,
+            boxShadow: "0 0 6px rgba(255, 255, 255, 0.4)",
+            display: "inline-block"
+          }}
+        />
+      )}
     </div>
   );
 }
