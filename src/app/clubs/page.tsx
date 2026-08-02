@@ -14,18 +14,24 @@ export interface Club {
   isPrivate: boolean;
   ownerName: string;
   isJoined?: boolean;
+  
+  // Paid VIP Club Support
+  isVIP?: boolean;
+  entryFeeCoins?: number;
 }
 
 const initialClubs: Club[] = [
   {
     id: "club-1",
-    name: "Delhi Tech & Crypto Nightowls",
+    name: "Delhi Tech & Crypto VIP Alpha",
     icon: "⚡",
     category: "Tech & Business",
-    description: "Late night discussions on web3, startup building, AI tools, and networking in NCR.",
-    membersCount: 1420,
+    description: "Exclusive club for crypto traders & startup founders. Includes daily alpha calls and private networking.",
+    membersCount: 420,
     isPrivate: false,
-    ownerName: "Rahul S."
+    ownerName: "Rahul S.",
+    isVIP: true,
+    entryFeeCoins: 500
   },
   {
     id: "club-2",
@@ -35,7 +41,8 @@ const initialClubs: Club[] = [
     description: "For people who love live gigs, techno sessions, rooftop parties, and vinyl records.",
     membersCount: 890,
     isPrivate: false,
-    ownerName: "Priya K."
+    ownerName: "Priya K.",
+    isVIP: false
   },
   {
     id: "club-3",
@@ -45,22 +52,28 @@ const initialClubs: Club[] = [
     description: "A cozy open space for late-night audio calls, deep conversations, life talks, and poetry.",
     membersCount: 3100,
     isPrivate: false,
-    ownerName: "Aarav M."
+    ownerName: "Aarav M.",
+    isVIP: false
   },
   {
     id: "club-4",
-    name: "Bollywood & Anime Buffs",
-    icon: "🍿",
-    category: "Hobbies & Movies",
-    description: "Watch parties, movie recommendations, memes, and fan theories.",
-    membersCount: 650,
+    name: "VIP Elite Dating & Matchmaking",
+    icon: "💎",
+    category: "Social & Dating",
+    description: "Curated high-profile dating club. Verified members, exclusive weekend video mixers.",
+    membersCount: 150,
     isPrivate: false,
-    ownerName: "Neha T."
+    ownerName: "Neha T.",
+    isVIP: true,
+    entryFeeCoins: 1000
   }
 ];
 
+import { useAppContext } from "../context/AppContext";
+
 export default function ClubsPage() {
   const router = useRouter();
+  const { tokens, deductTokens } = useAppContext();
   const [clubs, setClubs] = useState<Club[]>(initialClubs);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -75,18 +88,33 @@ export default function ClubsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const toggleJoin = (clubId: string) => {
-    setClubs(clubs.map(c => {
-      if (c.id === clubId) {
-        const nextJoined = !c.isJoined;
-        return {
-          ...c,
-          isJoined: nextJoined,
-          membersCount: nextJoined ? c.membersCount + 1 : c.membersCount - 1
-        };
+  const toggleJoin = (targetClub: Club) => {
+    if (targetClub.isJoined) {
+      // Leave club
+      setClubs(clubs.map(c => c.id === targetClub.id ? { ...c, isJoined: false, membersCount: c.membersCount - 1 } : c));
+      return;
+    }
+
+    // Check if it's a Paid VIP Club
+    if (targetClub.isVIP && targetClub.entryFeeCoins) {
+      if (tokens < targetClub.entryFeeCoins) {
+        alert(`🔒 This is a VIP Club requiring ${targetClub.entryFeeCoins} Pulse Coins. You currently have ${tokens} Coins.`);
+        router.push('/checkout');
+        return;
       }
-      return c;
-    }));
+
+      const success = deductTokens(targetClub.entryFeeCoins);
+      if (success) {
+        const ownerCut = Math.floor(targetClub.entryFeeCoins * 0.8); // 80% to owner
+        const platformCut = targetClub.entryFeeCoins - ownerCut; // 20% to Pulse
+        alert(`🎉 VIP Membership Unlocked! ${targetClub.entryFeeCoins} Coins spent (${ownerCut} to ${targetClub.ownerName}, ${platformCut} platform fee). Welcome to ${targetClub.name}!`);
+      } else {
+        return;
+      }
+    }
+
+    // Grant membership
+    setClubs(clubs.map(c => c.id === targetClub.id ? { ...c, isJoined: true, membersCount: c.membersCount + 1 } : c));
   };
 
   return (
@@ -154,16 +182,26 @@ export default function ClubsPage() {
                   {club.icon}
                 </div>
 
-                <span style={{ 
-                  fontSize: '12px', fontWeight: 600, padding: '4px 10px', 
-                  borderRadius: '100px', background: 'rgba(255,255,255,0.1)', color: 'var(--accent-primary)' 
-                }}>
-                  {club.category}
-                </span>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {club.isVIP && (
+                    <span style={{ 
+                      fontSize: '12px', fontWeight: 700, padding: '4px 10px', 
+                      borderRadius: '100px', background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', color: '#000' 
+                    }}>
+                      👑 VIP (🪙 {club.entryFeeCoins})
+                    </span>
+                  )}
+                  <span style={{ 
+                    fontSize: '12px', fontWeight: 600, padding: '4px 10px', 
+                    borderRadius: '100px', background: 'rgba(255,255,255,0.1)', color: 'var(--accent-primary)' 
+                  }}>
+                    {club.category}
+                  </span>
+                </div>
               </div>
 
               {/* Name */}
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: 600 }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {club.name}
               </h3>
 
@@ -175,18 +213,18 @@ export default function ClubsPage() {
               {/* Stats */}
               <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#888' }}>
                 <span>👥 {club.membersCount} members</span>
-                <span>👑 Created by {club.ownerName}</span>
+                <span>👑 Owner: {club.ownerName}</span>
               </div>
             </div>
 
             {/* Actions */}
             <div style={{ display: 'flex', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
               <button 
-                onClick={() => toggleJoin(club.id)}
+                onClick={() => toggleJoin(club)}
                 className={club.isJoined ? "btn-outline" : "btn-primary"}
-                style={{ flex: 1, padding: '10px 0', fontSize: '14px' }}
+                style={{ flex: 1, padding: '10px 0', fontSize: '14px', background: club.isJoined ? undefined : (club.isVIP ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : undefined), color: club.isJoined ? undefined : (club.isVIP ? '#000' : undefined) }}
               >
-                {club.isJoined ? "Leave Club" : "Join Club"}
+                {club.isJoined ? "Leave Club" : (club.isVIP ? `Unlock VIP (${club.entryFeeCoins} 🪙)` : "Join Club")}
               </button>
 
               <button 

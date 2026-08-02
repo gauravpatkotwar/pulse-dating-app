@@ -10,6 +10,8 @@ export default function CreateClubPage() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Social & Dating");
   const [icon, setIcon] = useState("🔥");
+  const [isVIP, setIsVIP] = useState(false);
+  const [entryFeeCoins, setEntryFeeCoins] = useState(500);
 
   const icons = ["🔥", "⚡", "🌙", "🎧", "🍿", "☕", "🎮", "🚀", "💡", "🎨"];
 
@@ -20,7 +22,12 @@ export default function CreateClubPage() {
       return;
     }
 
-    alert(`🎉 Success! Your club "${name}" has been created and is now open for anyone to join.`);
+    if (isVIP && entryFeeCoins <= 0) {
+      alert("Please set a valid VIP entry fee in Pulse Coins.");
+      return;
+    }
+
+    alert(`🎉 Success! Your ${isVIP ? 'VIP Paid' : 'Public'} club "${name}" has been created! ${isVIP ? `Entry fee: ${entryFeeCoins} Coins (80% paid to you, 20% platform commission).` : ''}`);
     router.push('/clubs');
   };
 
@@ -102,6 +109,38 @@ export default function CreateClubPage() {
           </select>
         </div>
 
+        {/* VIP Club Access Settings */}
+        <div style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid var(--card-border)' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', fontWeight: 600 }}>
+            <input 
+              type="checkbox" 
+              checked={isVIP}
+              onChange={(e) => setIsVIP(e.target.checked)}
+              style={{ width: '20px', height: '20px', accentColor: 'var(--accent-primary)' }}
+            />
+            👑 Make this a Paid VIP Club
+          </label>
+          
+          {isVIP && (
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
+              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>
+                Entry Fee in Pulse Coins (🪙)
+              </label>
+              <input 
+                type="number"
+                value={entryFeeCoins}
+                onChange={(e) => setEntryFeeCoins(Number(e.target.value))}
+                min={50}
+                placeholder="e.g. 500"
+                style={{ width: '100%' }}
+              />
+              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '6px', display: 'block' }}>
+                💡 You earn 80% of all entry fees (400 Coins per member). Pulse keeps a 20% platform commission.
+              </span>
+            </div>
+          )}
+        </div>
+
         {/* Description */}
         <div>
           <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>
@@ -118,7 +157,7 @@ export default function CreateClubPage() {
         </div>
 
         <button type="submit" className="btn-primary" style={{ marginTop: '8px', padding: '16px' }}>
-          🏰 Create Public Club
+          {isVIP ? "👑 Create Paid VIP Club" : "🏰 Create Public Club"}
         </button>
       </form>
     </main>
