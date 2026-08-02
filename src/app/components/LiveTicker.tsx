@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 
 const liveEvents = [
-  "🔥 Alex S. unlocked Delhi VIP Alpha Club (500 🪙)",
+  "✨ Alex S. unlocked Delhi VIP Alpha Club (500 Sparks)",
   "🎙️ 1,420 users currently connected in live P2P video calls",
-  "🪙 Sarah M. tipped 250 Coins on a Live Call",
+  "✨ Sarah M. tipped 250 Sparks on a Live Stream",
   "🛡️ Vikram R. activated ₹1 Anti-Bot Platform Pass",
   "💎 New 1-on-1 Fitness Session booked on Marketplace",
   "⭐ Priya K. created Mumbai Terrace Music Lounge Club"

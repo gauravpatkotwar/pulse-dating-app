@@ -50,8 +50,8 @@ export default function Home() {
           <Link href="/marketplace" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>🛍️ Marketplace</Link>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', padding: '8px 16px', borderRadius: '100px', border: '1px solid var(--card-border)' }}>
-              <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>🪙 {profile?.tokens || 0}</span>
-              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Coins</span>
+              <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>✨ {profile?.tokens || 0}</span>
+              <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Sparks</span>
             </div>
           ) : (
             <Link href="/login" className="btn-primary">Sign In</Link>
@@ -110,14 +110,13 @@ export default function Home() {
               </div>
               <div style={{ textAlign: 'center', borderLeft: '1px solid var(--card-border)' }}>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--accent-primary)' }}>{profile?.tokens || 0}</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Pulse Coins</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Pulse Sparks</div>
               </div>
             </div>
 
             {/* Actions */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <Link href="/profile" className="btn-outline" style={{ textAlign: 'center', textDecoration: 'none' }}>Edit Profile</Link>
-              <Link href="/checkout" className="btn-primary" style={{ textAlign: 'center', textDecoration: 'none' }}>🪙 Buy Pulse Coins</Link>
+              <Link href="/checkout" className="btn-primary" style={{ textAlign: 'center', textDecoration: 'none' }}>✨ Get Pulse Sparks</Link>
               <button onClick={logout} className="btn-outline" style={{ borderColor: 'transparent', color: 'var(--accent-danger)' }}>Sign Out</button>
             </div>
           </aside>
