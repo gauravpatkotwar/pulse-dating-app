@@ -31,6 +31,64 @@ export default function Home() {
       </header>
 
 
+      {/* Secondary Grid */}
+      <div className="bento-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', marginTop: '16px' }}>
+        
+        {/* WebRTC Calling Card */}
+        <div className="bento-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
+            <h3 className="h3" style={{ margin: '0 0 8px 0' }}>Video & Voice Calling</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>Start a secure peer-to-peer WebRTC call.</p>
+          </div>
+          
+          <button 
+            onClick={() => {
+              const newRoomId = Math.random().toString(36).substring(2, 10);
+              window.location.href = `/call/${newRoomId}`;
+            }}
+            className="btn-primary"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+          >
+            📹 Start New Call
+          </button>
+          
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input 
+              type="text" 
+              placeholder="Enter Room ID" 
+              id="joinRoomInput"
+              style={{
+                flex: 1,
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
+                padding: '0 12px',
+                color: 'white'
+              }}
+            />
+            <button 
+              onClick={() => {
+                const input = document.getElementById('joinRoomInput') as HTMLInputElement;
+                if (input.value) {
+                  window.location.href = `/call/${input.value}`;
+                }
+              }}
+              style={{
+                padding: '12px 20px',
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                borderRadius: '8px',
+                color: 'white',
+                cursor: 'pointer',
+                fontWeight: 500
+              }}
+            >
+              Join
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Bento Grid */}
       <div className="bento-grid">
         {/* Main Profile / 3D Avatar Area */}
