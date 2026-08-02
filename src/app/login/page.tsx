@@ -1,18 +1,36 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAppContext } from "../context/AppContext";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword 
+} from "firebase/auth";
+import { auth } from "../../lib/firebase";
 import Logo from "../components/Logo";
 
 export default function LoginPage() {
-  const { login, loginAnonymous } = useAppContext();
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      login(email);
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      // AppContext will automatically detect the auth state change and redirect
+    } catch (err: any) {
+      setError(err.message || "Failed to authenticate");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,10 +49,24 @@ export default function LoginPage() {
           <div style={{ marginBottom: '8px' }}>
             <Logo size={42} />
           </div>
-          <p className="text-muted">Sign in to start connecting</p>
+          <p className="text-muted">
+            {isSignUp ? "Create an account to join" : "Sign in to start connecting"}
+          </p>
         </div>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {error && (
+          <div style={{ 
+            background: 'rgba(255,92,92,0.1)', 
+            color: '#FF5C5C', 
+            padding: '12px', 
+            borderRadius: '8px',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-secondary)' }}>Email</label>
             <input 
@@ -63,6 +95,7 @@ export default function LoginPage() {
               onChange={e => setPassword(e.target.value)}
               placeholder="••••••••"
               required
+              minLength={6}
               style={{
                 background: '#000',
                 border: '1px solid rgba(255,255,255,0.1)',
@@ -75,34 +108,30 @@ export default function LoginPage() {
             />
           </div>
 
-          <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '8px' }}>
-            Sign In
+          <button 
+            type="submit" 
+            className="btn-primary" 
+            disabled={loading}
+            style={{ width: '100%', marginTop: '8px', opacity: loading ? 0.7 : 1 }}
+          >
+            {loading ? "Please wait..." : (isSignUp ? "Sign Up" : "Sign In")}
           </button>
         </form>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
-          <span className="text-muted" style={{ fontSize: '12px' }}>OR</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+        <div style={{ textAlign: 'center', marginTop: '8px' }}>
+          <button 
+            onClick={() => setIsSignUp(!isSignUp)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              textDecoration: 'underline'
+            }}
+          >
+            {isSignUp ? "Already have an account? Sign In" : "Need an account? Sign Up"}
+          </button>
         </div>
-
-        <button 
-          onClick={loginAnonymous}
-          style={{
-            background: 'transparent',
-            color: '#fff',
-            border: '1px solid var(--accent)',
-            padding: '12px 16px',
-            borderRadius: '100px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-          }}
-          onMouseOver={e => (e.currentTarget.style.background = 'rgba(196, 240, 66, 0.1)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
-        >
-          🎭 Continue Anonymously
-        </button>
 
       </div>
     </div>

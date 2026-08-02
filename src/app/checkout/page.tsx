@@ -1,99 +1,82 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppContext } from "../context/AppContext";
 import Logo from "../components/Logo";
+import { initializePaddle, Paddle } from '@paddle/paddle-js';
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { setTokens, setPremium } = useAppContext();
-  const [checkoutState, setCheckoutState] = useState<"idle" | "loading" | "success">("idle");
-  const [selectedProduct, setSelectedProduct] = useState<{name: string, price: string, type: "coins" | "premium", value: number} | null>(null);
-
+  const [paddle, setPaddle] = useState<Paddle | undefined>(undefined);
+  
+  // Sandbox Price IDs for Subscription plans (No Free Trial)
   const products = [
-    { name: "Starter Pack (100 🪙)", price: "$4.99", type: "coins" as const, value: 100 },
-    { name: "Pro Pack (500 🪙)", price: "$19.99", type: "coins" as const, value: 500 },
-    { name: "Premium Monthly", price: "$6.99/mo", type: "premium" as const, value: 1 },
-    { name: "Premium Yearly", price: "$49.99/yr", type: "premium" as const, value: 12 },
+    { name: "Starter Monthly", price: "$10.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m7zvv6acm8q4qaynhm1mj' },
+    { name: "Starter Yearly", price: "$100.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m8044srg70npddc5ndzyc' },
+    { name: "Pro Monthly", price: "$40.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m80p6aw3esp2favvphfnj' },
+    { name: "Pro Yearly", price: "$400.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m80y529j54p5mz503a9tf' },
+    { name: "Advanced Monthly", price: "$120.00/mo", type: "premium" as const, value: 1, priceId: 'pri_01kz0m81fwtpnjgytmv70ww5ed' },
+    { name: "Advanced Yearly", price: "$1200.00/yr", type: "premium" as const, value: 12, priceId: 'pri_01kz0m81r8hkcs0d5bwtas17k3' },
   ];
 
-  const handlePurchase = (product: typeof products[0]) => {
-    setSelectedProduct(product);
-    setCheckoutState("loading");
-    
-    // Simulate Paddle processing time
-    setTimeout(() => {
-      if (product.type === "coins") {
-        setTokens(prev => prev + product.value);
-      } else if (product.type === "premium") {
-        setPremium(true);
+  useEffect(() => {
+    // NOTE: Replace with your actual Sandbox Client-side Token
+    initializePaddle({ 
+      environment: 'sandbox', 
+      token: 'test_508966dfc5b930e6a85955b498c',
+      eventCallback: function(event) {
+        if (event.name === 'checkout.completed') {
+          // Paddle checkout was successful!
+          const purchasedItem = event.data?.items?.[0]?.price?.id;
+          const product = products.find(p => p.priceId === purchasedItem);
+          
+          if (product) {
+            if (product.type === "coins") {
+              setTokens(prev => prev + product.value);
+            } else if (product.type === "premium") {
+              setPremium(true);
+            }
+          }
+          
+          alert("Payment Successful! Your account has been credited.");
+          router.push('/');
+        }
       }
-      setCheckoutState("success");
-    }, 2000);
-  };
+    }).then(
+      (paddleInstance: Paddle | undefined) => {
+        if (paddleInstance) {
+          setPaddle(paddleInstance);
+        }
+      }
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const closeCheckout = () => {
-    setCheckoutState("idle");
-    setSelectedProduct(null);
+  const handlePurchase = (product: typeof products[0]) => {
+    if (!paddle) {
+      alert("Paddle is initializing, please wait a moment.");
+      return;
+    }
+    
+    // Open the official Paddle Checkout Modal
+    paddle.Checkout.open({
+      items: [
+        {
+          priceId: product.priceId,
+          quantity: 1
+        }
+      ],
+      // Optional settings you can configure
+      settings: {
+        theme: 'dark',
+      }
+    });
   };
 
   return (
     <main className="app-container" style={{ position: 'relative' }}>
       
-      {/* Simulated Paddle Overlay */}
-      {checkoutState !== "idle" && selectedProduct && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-          background: 'rgba(0,0,0,0.8)', zIndex: 9999,
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}>
-          <div style={{ 
-            width: '100%', maxWidth: '420px', background: '#fff', color: '#000', 
-            borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column'
-          }}>
-            <div style={{ padding: '24px', borderBottom: '1px solid #eaeaea', display: 'flex', justifyContent: 'space-between' }}>
-               <div style={{ fontWeight: 600, fontSize: '18px' }}>Paddle Checkout</div>
-               {checkoutState === "success" && (
-                  <button onClick={closeCheckout} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '18px' }}>✕</button>
-               )}
-            </div>
-            
-            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', flex: 1 }}>
-              {checkoutState === "loading" ? (
-                <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                  <div style={{ fontSize: '48px', animation: 'pulse 1.5s infinite' }}>💳</div>
-                  <h3 style={{ marginTop: '16px' }}>Processing Payment securely...</h3>
-                  <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>Please do not close this window.</p>
-                </div>
-              ) : (
-                <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                  <div style={{ fontSize: '48px', color: '#10B981' }}>✅</div>
-                  <h3 style={{ marginTop: '16px' }}>Payment Successful!</h3>
-                  <p style={{ color: '#666', fontSize: '14px', marginTop: '8px' }}>
-                    {selectedProduct.type === "coins" 
-                      ? `Successfully added ${selectedProduct.value} Pulse Coins to your wallet.` 
-                      : `Successfully activated ${selectedProduct.name}.`}
-                  </p>
-                  <p style={{ color: '#999', fontSize: '12px', marginTop: '24px' }}>Payout routed to Mercury Bank</p>
-                  
-                  <button 
-                    onClick={() => router.push('/')}
-                    style={{ 
-                      background: '#000', color: '#fff', padding: '12px 24px', 
-                      borderRadius: '8px', border: 'none', width: '100%', 
-                      fontWeight: 600, cursor: 'pointer', marginTop: '24px'
-                    }}
-                  >
-                    Return to Dashboard
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="h2" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button onClick={() => router.back()} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', fontSize: '24px', cursor: 'pointer' }}>←</button> 
@@ -107,6 +90,12 @@ export default function CheckoutPage() {
           Top up your Pulse Coins or unlock exclusive features with Premium. Secured by Paddle.
         </p>
 
+        {!paddle && (
+          <div style={{ textAlign: 'center', marginBottom: '24px', color: 'var(--accent)' }}>
+            Loading Paddle Checkout...
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
           {products.map(product => (
             <div key={product.name} className="bento-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px', justifyContent: 'space-between' }}>
@@ -117,7 +106,8 @@ export default function CheckoutPage() {
               <button 
                 className="btn-primary" 
                 onClick={() => handlePurchase(product)}
-                style={{ width: '100%' }}
+                style={{ width: '100%', opacity: paddle ? 1 : 0.5, cursor: paddle ? 'pointer' : 'not-allowed' }}
+                disabled={!paddle}
               >
                 Buy Now
               </button>

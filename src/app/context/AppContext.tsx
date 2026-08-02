@@ -2,8 +2,23 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { db, auth } from "../../lib/firebase";
+
+export type UserProfile = {
+  displayName?: string;
+  bio?: string;
+  age?: number;
+  gender?: string;
+  tokens: number;
+  isPremium: boolean;
+  onboardingComplete?: boolean;
+};
 
 type AppContextType = {
+  user: User | null;
+  profile: UserProfile | null;
   tokens: number;
   setTokens: React.Dispatch<React.SetStateAction<number>>;
   deductTokens: (amount: number) => boolean;
@@ -11,81 +26,114 @@ type AppContextType = {
   isAuthenticated: boolean;
   isPremium: boolean;
   setPremium: (status: boolean) => void;
-  login: (email: string) => void;
-  loginAnonymous: () => void;
   logout: () => void;
+  isLoading: boolean;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [tokens, setTokens] = useState<number>(0);
-  const [username, setUsername] = useState<string>("Anonymous Fox");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isPremium, setIsPremium] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   const router = useRouter();
   const pathname = usePathname();
 
+  // 1. Listen for Firebase Auth State Changes
   useEffect(() => {
-    const savedTokens = localStorage.getItem("pulse_tokens");
-    if (savedTokens) setTokens(parseInt(savedTokens));
-    
-    const savedPremium = localStorage.getItem("pulse_premium");
-    if (savedPremium === "true") setIsPremium(true);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setIsLoading(false);
+      
+      if (!firebaseUser && pathname !== '/login') {
+        router.push('/login');
+      }
+    });
 
-    const savedAuth = localStorage.getItem("pulse_auth");
-    const savedUser = localStorage.getItem("pulse_user");
-    if (savedAuth === "true") {
-      setIsAuthenticated(true);
-      if (savedUser) setUsername(savedUser);
-    } else if (pathname !== '/login') {
-      router.push('/login');
-    }
+    return () => unsubscribe();
   }, [pathname, router]);
 
+  // 2. Listen for Firestore Profile Changes
   useEffect(() => {
-    localStorage.setItem("pulse_tokens", tokens.toString());
-  }, [tokens]);
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+
+    const userDocRef = doc(db, "users", user.uid);
+    
+    const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as UserProfile;
+        setProfile(data);
+        
+        // Redirect to onboarding if not complete and not already there
+        if (!data.onboardingComplete && pathname !== '/onboarding' && pathname !== '/login') {
+          router.push('/onboarding');
+        }
+      } else {
+        // Initialize new user cloud profile
+        const newProfile: UserProfile = {
+          tokens: 0,
+          isPremium: false,
+        };
+        setDoc(userDocRef, newProfile, { merge: true });
+        
+        if (pathname !== '/onboarding' && pathname !== '/login') {
+          router.push('/onboarding');
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [user, pathname, router]);
+
+  // Cloud Write wrappers
+  const setTokens: React.Dispatch<React.SetStateAction<number>> = (value) => {
+    if (!user) return;
+    
+    if (typeof value === "function") {
+       const newVal = value(profile?.tokens || 0);
+       setDoc(doc(db, "users", user.uid), { tokens: newVal }, { merge: true });
+    } else {
+       setDoc(doc(db, "users", user.uid), { tokens: value }, { merge: true });
+    }
+  };
 
   const setPremium = (status: boolean) => {
-    setIsPremium(status);
-    localStorage.setItem("pulse_premium", status ? "true" : "false");
+    if (!user) return;
+    setDoc(doc(db, "users", user.uid), { isPremium: status }, { merge: true });
   };
 
   const deductTokens = (amount: number) => {
-    if (tokens >= amount) {
+    if (profile && profile.tokens >= amount) {
       setTokens(prev => prev - amount);
       return true;
     }
     return false;
   };
   
-  const login = (email: string) => {
-    setIsAuthenticated(true);
-    setUsername(email.split('@')[0]);
-    localStorage.setItem("pulse_auth", "true");
-    localStorage.setItem("pulse_user", email.split('@')[0]);
-    router.push('/');
-  };
-  
-  const loginAnonymous = () => {
-    setIsAuthenticated(true);
-    setUsername("Anonymous_" + Math.floor(Math.random() * 1000));
-    localStorage.setItem("pulse_auth", "true");
-    localStorage.setItem("pulse_user", "Anonymous");
-    router.push('/');
-  };
-  
   const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem("pulse_auth");
-    router.push('/login');
+    signOut(auth).then(() => {
+      router.push('/login');
+    });
   };
 
+  // Fallbacks for UI components that rely on the old flat properties
+  const tokens = profile?.tokens || 0;
+  const isPremium = profile?.isPremium || false;
+  const username = profile?.displayName || user?.email?.split('@')[0] || "Anonymous";
+  const isAuthenticated = !!user;
+
   return (
-    <AppContext.Provider value={{ tokens, setTokens, deductTokens, username, isAuthenticated, isPremium, setPremium, login, loginAnonymous, logout }}>
-      {children}
+    <AppContext.Provider value={{ 
+      user, profile, tokens, setTokens, deductTokens, 
+      username, isAuthenticated, isPremium, setPremium, 
+      logout, isLoading 
+    }}>
+      {/* Show nothing while initial auth state loads to prevent flash of login page */}
+      {isLoading ? null : children}
     </AppContext.Provider>
   );
 }

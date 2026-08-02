@@ -16,9 +16,6 @@ export default function Home() {
         </div>
         <nav className={styles.nav}>
           <a href="#discover">Discover</a>
-          <a href="/chat">Chat</a>
-          <a href="/calls">Calls</a>
-          <a href="/adult-chat" style={{ color: '#FF5C5C', fontWeight: 600 }}>Adult 18+</a>
         </nav>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <Wallet />
@@ -37,24 +34,45 @@ export default function Home() {
       {/* Bento Grid */}
       <div className="bento-grid">
         {/* Main Profile / 3D Avatar Area */}
-        <div className={`bento-card ${styles.cardHero}`}>
-          <div className={styles.heroContent}>
-            <div className={styles.avatarControls}>
+        <div className={`bento-card ${styles.cardHero}`} style={{ position: 'relative' }}>
+          <div className={styles.heroContent} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h1 className="h1" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {profile?.displayName || "Anonymous"} 
+                  {profile?.age && <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{profile.age}</span>}
+                </h1>
+                {profile?.gender && (
+                  <span style={{ 
+                    display: 'inline-block', marginTop: '8px', padding: '4px 12px', 
+                    background: 'rgba(255,255,255,0.1)', borderRadius: '100px', fontSize: '14px' 
+                  }}>
+                    {profile.gender}
+                  </span>
+                )}
+              </div>
               <div className={styles.colorDots}>
                 <span className={styles.dot} style={{ backgroundColor: '#FF5C5C' }}></span>
-                <span className={styles.dot} style={{ backgroundColor: '#FFAB5C' }}></span>
-                <span className={styles.dot} style={{ backgroundColor: '#FFE65C' }}></span>
                 <span className={styles.dot} style={{ backgroundColor: '#5CFF7A' }}></span>
                 <span className={styles.dot} style={{ backgroundColor: '#5CC9FF' }}></span>
               </div>
             </div>
-            
-            <div className={styles.avatarContainer}>
-               {/* Placeholder for 3D character or avatar */}
-               <div className={styles.avatarPlaceholder}>
-                 <span className={styles.avatarEmoji}>👽</span>
+
+            <div className={styles.avatarContainer} style={{ marginTop: 'auto', marginBottom: 'auto' }}>
+               <div className={styles.avatarPlaceholder} style={{ background: 'transparent' }}>
+                 <span className={styles.avatarEmoji} style={{ fontSize: '100px' }}>
+                   {profile?.gender === 'Female' ? '👩' : (profile?.gender === 'Male' ? '👦' : '🧑')}
+                 </span>
                </div>
             </div>
+
+            <div style={{ marginTop: 'auto' }}>
+               <p style={{ fontSize: '18px', lineHeight: 1.5, color: '#e0e0e0', fontStyle: 'italic', textAlign: 'center' }}>
+                 "{profile?.bio || "Set up your bio in settings to get more matches!"}"
+               </p>
+            </div>
+            
           </div>
         </div>
 
@@ -128,20 +146,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Recent Matches / Chat Previews */}
-        <div className={`bento-card ${styles.cardMatches}`}>
-           <div className={styles.matchItem}>
-             <div className={styles.matchTime}>Apr 24, 11:35 AM</div>
-             <div className="h3">Lucky Fox</div>
-             <div className={styles.matchAvatar}>🦊</div>
-           </div>
-           
-           <div className={styles.matchItem}>
-             <div className={styles.matchTime}>Apr 18, 3:50 PM</div>
-             <div className="h3">Piggy and skate</div>
-             <div className={styles.matchAvatar}>🐷</div>
-           </div>
-        </div>
+
       </div>
     </main>
   );
